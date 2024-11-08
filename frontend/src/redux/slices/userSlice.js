@@ -9,10 +9,13 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     login: (state) => {
-      state.isLoggedIn = !state.isLoggedIn;
+      state.isLoggedIn = true;
+    },
+    logout: (state) => {
+      state.isLoggedIn = false;
     },
   },
 });
 
-export const { login } = userSlice.actions;
+export const { login, logout } = userSlice.actions;
 export default userSlice.reducer;

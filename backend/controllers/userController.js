@@ -74,6 +74,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: true,
+    // sameSite: "None", 
   };
 
   return res
@@ -117,4 +118,14 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "User logged out"));
 });
 
-export { registerUser, loginUser, logoutUser };
+const getLoginUser = asyncHandler(async (req, res) => {
+console.log(req.user);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, req.user, "current user fetched successfully"));
+});
+
+
+
+export { registerUser, loginUser, logoutUser,getLoginUser };

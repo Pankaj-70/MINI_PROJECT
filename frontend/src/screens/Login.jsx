@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { login } from "../redux/slices/userSlice.js";
-axios.defaults.withCredentials = true;
+// axios.defaults.withCredentials = true;
 const Login = () => {
   const navigate = useNavigate();
   const [email, SetEmail] = useState("");
@@ -20,10 +20,13 @@ const Login = () => {
     SetIsProcessing(true);
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/user/login",
+        "/api/v1/user/login",
         {
           email,
           password,
+        },
+        {
+          withCredentials: true, // This is the key to allow cookies to be included
         }
       );
       dispatch(login());

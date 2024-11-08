@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import ImageSlider from "../components/ImageSlider";
 import Pizza from "../assets/HomeImages/pizza.png";
 import Testimonials from "../components/Testimonials";
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { login, logout } from "../redux/slices/userSlice";
 const fadeIn = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { duration: 0.5 } },
@@ -237,7 +239,33 @@ const Home = () => {
   ];
 
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
-  return (
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get("/api/v1/user/getuser");
+
+        if (response.data.success) {
+          console.log("User is logged in");
+
+          dispatch(login());
+        } else {
+          dispatch(logout());
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        dispatch(logout());
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  return !loading ? (
     <div className="min-h-screen overflow-hidden">
       {/* Hero Section */}
       <motion.div
@@ -349,6 +377,8 @@ const Home = () => {
         </button>
       </motion.section>
     </div>
+  ) : (
+    <div>Page Loading</div>
   );
 };
 
