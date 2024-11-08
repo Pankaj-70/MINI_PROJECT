@@ -4,6 +4,7 @@ import ImageSlider from "../components/ImageSlider";
 import Pizza from "../assets/HomeImages/pizza.png";
 import Testimonials from "../components/Testimonials";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
 const fadeIn = {
 	hidden: { opacity: 0 },
 	visible: { opacity: 1, transition: { duration: 0.5 } },
@@ -140,7 +141,7 @@ const Home = () => {
 			content: "Mutton Curry",
 		},
 	];
-
+	const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 	return (
 		<div className="min-h-screen overflow-hidden">
 			{/* Hero Section */}
