@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-
+import { useSelector, useDispatch } from "react-redux";
 const Navbar = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const navigate = useNavigate();
-
+	const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 	return (
 		<div className="p-4 bg-gray-800 flex items-center justify-between fixed w-full z-50">
 			<h1 className="shadow-white text-4xl font-bold font-playwrite cursor-pointer transition-transform duration-100 transform hover:scale-100 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-orange-200 to-red-400">
@@ -42,7 +42,7 @@ const Navbar = () => {
 				className="hidden md:block bg-orange-700 px-4 py-1 text-[17px] rounded-md mr-2 hover:bg-orange-500 font-semibold"
 				onClick={() => navigate("/login")}
 			>
-				Login
+				{isLoggedIn ? "Logout" : "Login"}
 			</button>
 			<div className="md:hidden">
 				<button

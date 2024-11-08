@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { login } from "../redux/slices/userSlice.js";
 
 const Login = () => {
 	const navigate = useNavigate();
@@ -9,6 +11,8 @@ const Login = () => {
 	const [password, SetPassword] = useState("");
 	const [buttonText, SetButtonText] = useState("Login");
 	const [isProcessing, SetIsProcessing] = useState(false);
+	const isLogin = useSelector((state) => state.user.isLoggedIn);
+	const dispatch = useDispatch();
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -22,7 +26,8 @@ const Login = () => {
 					password,
 				}
 			);
-
+			dispatch(login());
+			navigate("/");
 			console.log(response);
 		} catch (error) {
 			console.log("Error in fetching data");
