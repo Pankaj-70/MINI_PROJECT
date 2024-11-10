@@ -1,8 +1,3 @@
-import jwt from "jsonwebtoken";
-import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiError } from "../utils/apiError.js";
-import { User } from "../models/userSchema.js";
-
 export const verifyJWT = asyncHandler(async (req, _, next) => {
   try {
     const token =
@@ -14,7 +9,6 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
     }
 
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-
     const user = await User.findById(decodedToken?._id).select(
       "-password -createdAt -updatedAt -__v"
     );
@@ -23,7 +17,8 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
       throw new ApiError(401, "Invalid Access Token");
     }
 
-    req.user = user;
+    req.user = user; // Ensure this is set
+    console.log("User from token:", req.user); // Debug log
     next();
   } catch (error) {
     throw new ApiError(401, error?.message || "Invalid access token");

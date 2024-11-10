@@ -1,32 +1,32 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaUser } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { useSelector, useDispatch } from "react-redux";
-import { login } from "../redux/slices/userSlice.js";
+import { logout } from "../redux/slices/userSlice.js";
+import { MdLogout } from "react-icons/md";
 import axios from "axios";
+
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const dispatch = useDispatch();
-  const handleLogin = () => {
-    if (isLoggedIn) {
-      navigate("/");
-      dispatch(login());
-    } else {
-      navigate("/login");
-    }
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const handleShortLogin = () => {
-    setIsOpen(false);
-  };
   return (
     <div className="p-4 bg-gray-800 flex items-center justify-between fixed w-full z-50">
-      <h1 className="shadow-white text-4xl font-bold font-playwrite cursor-pointer transition-transform duration-100 transform hover:scale-100 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-orange-200 to-red-400">
+      <h1
+        className="shadow-white text-4xl font-bold font-playwrite cursor-pointer transition-transform duration-100 transform hover:scale-100 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-orange-200 to-red-400"
+        onClick={() => navigate("/")}
+      >
         Gastron
       </h1>
+
+      {/* Main Menu Links (Visible on Larger Screens) */}
       <nav className="hidden md:flex space-x-4">
         <Link
           to="/"
@@ -53,58 +53,148 @@ const Navbar = () => {
           Contact Us
         </Link>
       </nav>
-      <button
-        className="hidden md:block bg-orange-700 px-4 py-1 text-[17px] rounded-md mr-2 hover:bg-orange-500 font-semibold"
-        onClick={handleLogin}
-      >
-        {isLoggedIn ? "Logout" : "Login"}
-      </button>
+
+      {/* FaUser Icon or Login Button (Larger Screens) */}
+      <div className="flex items-center">
+        {isLoggedIn ? (
+          <div className="flex flex-col items-center">
+            <button
+              className="hidden md:block text-gray-800 bg-white text-[18px] cursor-pointer hover:bg-gray-500 hover:text-white p-2 rounded-full"
+              onClick={toggleSidebar}
+            >
+              <FaUser className="text-2xl" />
+            </button>
+          </div>
+        ) : (
+          <button
+            className="hidden md:block text-white bg-orange-700 px-4 py-1 text-[17px] rounded-md hover:bg-orange-500 font-semibold"
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </button>
+        )}
+      </div>
+
+      {/* Sidebar Toggle Button for Small Screens */}
       <div className="md:hidden">
         <button
-          className="text-[27px] cursor-pointer hover:bg-gray-700 p-2 rounded-md transition-transform duration-200 transform hover:scale-105 font-extrabold"
-          onClick={() => setIsOpen(!isOpen)}
+          className="text-[27px] cursor-pointer hover:bg-gray-700 p-2 rounded-md"
+          onClick={toggleSidebar}
         >
-          {!isOpen ? <FaBars /> : <IoClose />}
+          {isSidebarOpen ? <IoClose /> : <FaBars />}
         </button>
       </div>
 
-      {isOpen && (
-        <div className="md:hidden h-screen bg-gray-700 absolute top-[75px] left-0 right-0 text-white flex flex-col z-50">
+      {/* Sidebar for Small Screens with Menu and Profile Options */}
+      {isSidebarOpen && (
+        <div className="absolute right-0 top-[75px] bg-gray-700 text-white w-[300px] h-screen z-50">
+          {/* Menu Links */}
           <Link
             to="/"
-            className="block hover:bg-gray-600 pl-5 py-2"
-            onClick={() => setIsOpen(false)}
+            className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
+            onClick={toggleSidebar}
           >
             Home
           </Link>
           <Link
             to="/about"
-            className="block w-full hover:bg-gray-600 pl-5 py-2"
-            onClick={() => setIsOpen(false)}
+            className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
+            onClick={toggleSidebar}
           >
             About
           </Link>
           <Link
             to="/special"
-            className="block w-full hover:bg-gray-600 pl-5 py-2"
-            onClick={() => setIsOpen(false)}
+            className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
+            onClick={toggleSidebar}
           >
             Specials
           </Link>
           <Link
             to="/contact"
-            className="block w-full hover:bg-gray-600 pl-5 py-2"
-            onClick={() => setIsOpen(false)}
+            className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
+            onClick={toggleSidebar}
           >
             Contact Us
           </Link>
-          <Link
-            to={isLoggedIn ? "/" : "/login"}
-            className="block w-full hover:bg-gray-600 pl-5 py-2"
-            onClick={handleShortLogin}
-          >
-            {isLoggedIn ? "Logout" : "Login"}
-          </Link>
+
+          {/* Profile Options (Visible when Logged In) */}
+          {isLoggedIn && (
+            <>
+              <Link
+                to="/profile"
+                className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
+                onClick={toggleSidebar}
+              >
+                My Profile
+              </Link>
+              <Link
+                to="/orders"
+                className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
+                onClick={toggleSidebar}
+              >
+                My Orders
+              </Link>
+              <Link
+                to="/wishlist"
+                className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
+                onClick={toggleSidebar}
+              >
+                Wishlist
+              </Link>
+              <Link
+                to="/settings"
+                className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
+                onClick={toggleSidebar}
+              >
+                Settings
+              </Link>
+              <Link
+                to="/payment-methods"
+                className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
+                onClick={toggleSidebar}
+              >
+                Payment Methods
+              </Link>
+              <Link
+                to="/notifications"
+                className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
+                onClick={toggleSidebar}
+              >
+                Notifications
+              </Link>
+              <Link
+                to="/support"
+                className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
+                onClick={toggleSidebar}
+              >
+                Help & Support
+              </Link>
+
+              <button
+                onClick={async () => {
+                  try {
+                    const response = await axios.post(
+                      "/api/v1/user/logout",
+                      {},
+                      { withCredentials: true }
+                    );
+                    console.log("User logged out successfully");
+                    dispatch(logout());
+                    toggleSidebar(); // Close the sidebar
+                    navigate("/"); // Redirect to homepage
+                  } catch (error) {
+                    console.error("Logout failed:", error);
+                    alert("Logout failed, please try again.");
+                  }
+                }}
+                className="w-full text-left py-2 px-4 pt-3 rounded-md mt-4 hover:bg-gray-400 hover:text-black flex items-center space-x-2"
+              >
+                <MdLogout className="text-[21px] font-extrabold" />
+                <span>Logout</span>
+              </button>
+            </>
+          )}
         </div>
       )}
     </div>

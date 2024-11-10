@@ -8,6 +8,13 @@ import Login from "./screens/Login";
 import Footer from "./components/Footer";
 import ForgotPassword from "./screens/ForgotPassword";
 import Register from "./screens/Register";
+import Profile from "./screens/Profile";
+import Orders from "./screens/Orders";
+import Wishlist from "./screens/WishList";
+import Settings from "./screens/Settings";
+import PaymentMethods from "./screens/PaymentMethods";
+import Notifications from "./screens/Notifications";
+import Support from "./screens/Support";
 function App() {
   return (
     <>
@@ -22,6 +29,13 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot_password" element={<ForgotPassword />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/payment-methods" element={<PaymentMethods />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/support" element={<Support />} />
           </Routes>
         </Router>
         <Footer />

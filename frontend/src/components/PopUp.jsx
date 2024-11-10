@@ -50,10 +50,12 @@ const PopUp = ({ item, onClose }) => {
 
         <div className="mb-4">
           <p className="text-red-600 line-through text-xl">
-            Rs {Math.floor(item.price + item.price * 0.2)}
+            Rs{" "}
+            {Math.floor(item.price + item.price * (0.1 + 0.1 * quantity)) *
+              quantity}
           </p>
           <p className="text-green-600 text-xl font-semibold">
-            Rs {item.price} /-
+            Rs {item.price * quantity} /-
           </p>
         </div>
 
@@ -73,9 +75,14 @@ const PopUp = ({ item, onClose }) => {
               <FaPlus />
             </button>
           </div>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded">
-            Add to Cart
-          </button>
+          <div className="flex gap-2">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+              Add to Cart
+            </button>
+            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+              Buy Now
+            </button>
+          </div>
         </div>
       </div>
     </div>
