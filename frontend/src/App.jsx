@@ -1,3 +1,4 @@
+import ScrollToTop from "./components/ScrollToTop";
 import Home from "./screens/Home";
 import Special from "./screens/Special";
 import Contact from "./screens/Contact";
@@ -15,11 +16,14 @@ import Settings from "./screens/Settings";
 import PaymentMethods from "./screens/PaymentMethods";
 import Notifications from "./screens/Notifications";
 import Support from "./screens/Support";
+import CheckoutPage from "./screens/CheckOutPage";
+import CartPage from "./screens/CartPage";
 function App() {
   return (
     <>
       <div className="h-screen w-full bg-gray-700 text-white gap-12">
         <Router>
+          <ScrollToTop></ScrollToTop>
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
@@ -36,6 +40,8 @@ function App() {
             <Route path="/payment-methods" element={<PaymentMethods />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/support" element={<Support />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/cart" element={<CartPage />} />
           </Routes>
         </Router>
         <Footer />

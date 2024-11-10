@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaBars, FaUser } from "react-icons/fa";
+import { FaBars, FaUser, FaShoppingCart } from "react-icons/fa"; // Import Cart Icon
 import { IoClose } from "react-icons/io5";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../redux/slices/userSlice.js";
@@ -11,11 +11,18 @@ const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const cartItems = useSelector((state) => state.cart.cartItems); // Select cart items from Redux store
   const dispatch = useDispatch();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  // Get total number of items in the cart
+  const totalCartItems = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
 
   return (
     <div className="p-4 bg-gray-800 flex items-center justify-between fixed w-full z-50">
@@ -54,8 +61,23 @@ const Navbar = () => {
         </Link>
       </nav>
 
-      {/* FaUser Icon or Login Button (Larger Screens) */}
-      <div className="flex items-center">
+      {/* FaUser Icon, Cart Icon, and Login Button (Larger Screens) */}
+      <div className="flex items-center space-x-4">
+        {/* Cart Icon */}
+        {isLoggedIn && (
+          <div
+            className="relative cursor-pointer"
+            onClick={() => navigate("/cart")}
+          >
+            <FaShoppingCart className="text-white text-2xl" />
+            {totalCartItems > 0 && (
+              <span className="absolute top-[-8px] right-[-10px] bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center">
+                {totalCartItems}
+              </span>
+            )}
+          </div>
+        )}
+
         {isLoggedIn ? (
           <div className="flex flex-col items-center">
             <button
@@ -91,28 +113,28 @@ const Navbar = () => {
           {/* Menu Links */}
           <Link
             to="/"
-            className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
+            className="lg:hidden block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
             onClick={toggleSidebar}
           >
             Home
           </Link>
           <Link
             to="/about"
-            className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
+            className="lg:hidden block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
             onClick={toggleSidebar}
           >
             About
           </Link>
           <Link
             to="/special"
-            className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
+            className="lg:hidden block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
             onClick={toggleSidebar}
           >
             Specials
           </Link>
           <Link
             to="/contact"
-            className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
+            className="lg:hidden block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
             onClick={toggleSidebar}
           >
             Contact Us

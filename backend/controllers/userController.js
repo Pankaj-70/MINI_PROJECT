@@ -95,20 +95,22 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
+  if (!req.user || !req.user._id) {
+    return res.status(400).json({ message: "User not found" });
+  }
+
+  // Remove the refresh token from the user record
   await User.findByIdAndUpdate(
     req.user._id,
-    {
-      $unset: {
-        refreshToken: 1,
-      },
-    },
-    {
-      new: true,
-    }
+    { $unset: { refreshToken: 1 } },
+    { new: true }
   );
+
+  // Define cookie options with sameSite included
   const options = {
     httpOnly: true,
     secure: true,
+    sameSite: "None", // Use "Lax" or "Strict" based on your needs
   };
 
   res

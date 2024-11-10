@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import { FaMinus, FaPlus } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { addToCart, buyNow } from "../redux/slices/cartSlice"; // Import actions
+import { useNavigate } from "react-router-dom";
 
 const PopUp = ({ item, onClose }) => {
   const [quantity, setQuantity] = useState(1);
   const [rating, setRating] = useState(0);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const incrementQuantity = () => setQuantity(quantity + 1);
   const decrementQuantity = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
@@ -17,6 +22,17 @@ const PopUp = ({ item, onClose }) => {
   const renderStars = (rating) => {
     let stars = "★".repeat(rating);
     return stars;
+  };
+
+  const handleAddToCart = () => {
+    dispatch(addToCart({ item, quantity })); // addToCart checks if item exists in cart and increments quantity
+    onClose(); // Close the popup
+  };
+
+  const handleBuyNow = () => {
+    dispatch(buyNow({ item, quantity }));
+    onClose();
+    navigate("/checkout"); // Navigate to the checkout page
   };
 
   return (
@@ -76,10 +92,16 @@ const PopUp = ({ item, onClose }) => {
             </button>
           </div>
           <div className="flex gap-2">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+              onClick={handleAddToCart}
+            >
               Add to Cart
             </button>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+              onClick={handleBuyNow}
+            >
               Buy Now
             </button>
           </div>
