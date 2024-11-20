@@ -1,43 +1,20 @@
 import React, { useState } from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import PopUp from "./PopUp";
+import PopUp from "./PopUp"; // PopUp component for displaying item details
 
-const ImageSlider = ({ content, title, description }) => {
+const ImageSlider = ({ name, title, description }) => {
   const [selectedItem, setSelectedItem] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 7,
-    slidesToScroll: 1,
-    appendDots: (dots) => (
-      <div style={{ padding: "10px" }}>
-        <ul style={{ margin: "0px" }}> {dots} </ul>
-      </div>
-    ),
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 5,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 4,
-        },
-      },
-      {
-        breakpoint: 640,
-        settings: {
-          slidesToShow: 3,
-        },
-      },
-    ],
+  const itemsPerPage = 6;
+  const totalItems = name.length;
+
+  // Move to the next set of items (circular rotation)
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % totalItems);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + totalItems) % totalItems);
   };
 
   const handleItemClick = (item) => {
@@ -48,32 +25,65 @@ const ImageSlider = ({ content, title, description }) => {
     setSelectedItem(null);
   };
 
+  // Circularly wrap around the array to display the next 6 items
+  const getItemsToDisplay = () => {
+    let displayItems = [];
+    for (let i = 0; i < itemsPerPage; i++) {
+      const index = (currentIndex + i) % totalItems; // This ensures circular rotation
+      displayItems.push(name[index]);
+    }
+    return displayItems;
+  };
+
   return (
     <div className="pl-5 bg-gradient-to-r from-blue-700 to-blue-400 rounded-lg shadow-lg p-4">
       <h2 className="text-3xl pt-6 mb-2 font-bold text-yellow-400 font-roboto">
         {title}
       </h2>
       <p className="text-lg text-gray-200 mb-4 font-poppins">{description}</p>
-      <div className="pl-4 pr-6">
-        <Slider {...settings} className="mb-6">
-          {content.map((item, index) => (
-            <div
-              key={index}
-              className="shadow-lg rounded-lg overflow-hidden cursor-pointer transition-transform duration-300 transform hover:scale-105 mt-2 mb-8"
-              onClick={() => handleItemClick(item)}
-            >
-              <img
-                src={item.img}
-                alt={item.content}
-                className="w-28 h-24 md:w-40 md:h-36 object-cover bg-white rounded-lg border-2 border-white shadow-md mb-3"
-              />
-              <p className="text-center p-2 text-black bg-green-400 font-transition duration-300 w-28 md:w-40">
-                {item.content}
-              </p>
-            </div>
-          ))}
-        </Slider>
+
+      {/* Image Slider */}
+      <div className="relative">
+        <div className="flex overflow-hidden transition-all duration-500 ease-in-out">
+          {/* Show 6 items at once */}
+          <div className="flex space-x-4">
+            {" "}
+            {/* Added space between slides */}
+            {getItemsToDisplay().map((item, index) => (
+              <div
+                key={index}
+                className="shadow-lg rounded-lg overflow-hidden cursor-pointer transition-transform duration-300 transform hover:scale-105 mt-2 mb-8"
+                onClick={() => handleItemClick(item)}
+              >
+                <img
+                  src={item.img}
+                  alt={item.name}
+                  className="w-36 h-32 md:w-48 md:h-40 lg:w-64 lg:h-56 object-cover bg-white rounded-lg border-2 border-white shadow-md mb-3" // Enlarged image size
+                />
+                <p className="text-center p-2 text-black bg-green-400 font-transition duration-300 w-36 md:w-48">
+                  {item.name}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Navigation Buttons */}
+        <button
+          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-2 rounded-full"
+          onClick={prevSlide}
+        >
+          &lt;
+        </button>
+        <button
+          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-2 rounded-full"
+          onClick={nextSlide}
+        >
+          &gt;
+        </button>
       </div>
+
+      {/* Popup for selected item */}
       {selectedItem && <PopUp item={selectedItem} onClose={closePopUp} />}
     </div>
   );

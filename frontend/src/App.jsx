@@ -18,31 +18,34 @@ import Notifications from "./screens/Notifications";
 import Support from "./screens/Support";
 import CheckoutForm from "./screens/CheckOutForm";
 import CartPage from "./screens/CartPage";
+
 function App() {
   return (
     <>
-      <div className="h-screen w-full bg-gray-700 text-white gap-12">
+      <div className="flex flex-col min-h-screen bg-gray-700 text-white">
         <Router>
-          <ScrollToTop></ScrollToTop>
+          <ScrollToTop />
           <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/special" element={<Special />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot_password" element={<ForgotPassword />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/payment-methods" element={<PaymentMethods />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/support" element={<Support />} />
-            <Route path="/checkout" element={<CheckoutForm />} />
-            <Route path="/cart" element={<CartPage />} />
-          </Routes>
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/special" element={<Special />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot_password" element={<ForgotPassword />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/payment-methods" element={<PaymentMethods />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/support" element={<Support />} />
+              <Route path="/checkout" element={<CheckoutForm />} />
+              <Route path="/cart" element={<CartPage />} />
+            </Routes>
+          </main>
         </Router>
         <Footer />
       </div>

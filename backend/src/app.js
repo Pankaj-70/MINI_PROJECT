@@ -16,6 +16,11 @@ app.use(cookieParser());
 app.use(express.static("public"));
 
 import userRouter from "./routes/user.routes.js";
+import cartRouter from "./routes/cart.routes.js";
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/cart", cartRouter);
 
+app.get("/api/v1/user/add", (req, res) => {
+  res.send("Working");
+});
 export { app };

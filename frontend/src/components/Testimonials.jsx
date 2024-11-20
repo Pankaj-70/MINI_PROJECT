@@ -1,7 +1,4 @@
-import React from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import React, { useState, useEffect } from "react";
 
 // Sample testimonials data with images
 const testimonialsData = [
@@ -23,7 +20,7 @@ const testimonialsData = [
       "I love the user-friendly interface and the variety of options available.",
   },
   {
-    img: "https://images.unsplash.com/photo-1552058544-f2b08422138a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MXwyMDg2OHwwfDF8c2VhcmNofDl8fGZhY2V8ZW58MHx8fHw&ixlib=rb-1.2.1&q=80&w=200",
+    img: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cGVvcGxlfGVufDB8fDB8fHww",
     name: "Linda M.",
     content: "The food always arrives hot and fresh. Highly recommend!",
   },
@@ -38,7 +35,7 @@ const testimonialsData = [
     content: "Best app for food delivery. I use it every week!",
   },
   {
-    img: "https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MXwyMDg2OHwwfDF8c2VhcmNofDh8fGZhY2V8ZW58MHx8fHw&ixlib=rb-1.2.1&q=80&w=200",
+    img: "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D",
     name: "Chris S.",
     content: "Super easy to order, and the discounts are fantastic!",
   },
@@ -47,58 +44,104 @@ const testimonialsData = [
     name: "Jessica T.",
     content: "I love how they keep track of my favorite orders.",
   },
+  {
+    img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MXwyMDg2OHwwfDF8c2VhcmNofDZ8fGZhY2V8ZW58MHx8fHw&ixlib=rb-1.2.1&q=80&w=200",
+    name: "Sophia L.",
+    content: "Fantastic delivery speed and amazing customer support.",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MXwyMDg2OHwwfDF8c2VhcmNofDF8fGZhY2V8ZW58MHx8fHw&ixlib=rb-1.2.1&q=80&w=200",
+    name: "James F.",
+    content: "The app is easy to use, and the quality is top-notch.",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MXwyMDg2OHwwfDF8c2VhcmNofDl8fGZhY2V8ZW58MHx8fHw&ixlib=rb-1.2.1&q=80&w=200",
+    name: "Hannah B.",
+    content: "Love the variety of options and great offers.",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGVvcGxlfGVufDB8fDB8fHww",
+    name: "Liam T.",
+    content: "Affordable and super convenient for daily meals.",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D",
+    name: "Ethan G.",
+    content: "Best service I’ve ever used for food delivery.",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MXwyMDg2OHwwfDF8c2VhcmNofDEwfGZhY2V8ZW58MHx8fHw&ixlib=rb-1.2.1&q=80&w=200",
+    name: "Olivia H.",
+    content: "I love their healthy meal options!",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MXwyMDg2OHwwfDF8c2VhcmNofDl8fGZhY2V8ZW58MHx8fHw&ixlib=rb-1.2.1&q=80&w=200",
+    name: "Isabella V.",
+    content: "Perfect for large family orders!",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MXwyMDg2OHwwfDF8c2VhcmNofDJ8fGZhY2V8ZW58MHx8fHw&ixlib=rb-1.2.1&q=80&w=200",
+    name: "Emma R.",
+    content: "Great service and amazing discounts!",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MXwyMDg2OHwwfDF8c2VhcmNofDR8fGZhY2V8ZW58MHx8fHw&ixlib=rb-1.2.1&q=80&w=200",
+    name: "Ava T.",
+    content: "Fast delivery every time. Never had an issue!",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MXwyMDg2OHwwfDF8c2VhcmNofDZ8fGZhY2V8ZW58MHx8fHw&ixlib=rb-1.2.1&q=80&w=200",
+    name: "Sophie P.",
+    content: "I always recommend this service to my friends!",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1479936343636-73cdc5aae0c3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8cGVvcGxlfGVufDB8fDB8fHww",
+    name: "Emily C.",
+    content: "Amazing service and fresh food every time.",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MXwyMDg2OHwwfDF8c2VhcmNofDF8fGZhY2V8ZW58MHx8fHw&ixlib=rb-1.2.1&q=80&w=200",
+    name: "Ryan G.",
+    content: "Perfect for late-night cravings!",
+  },
 ];
 
 const Testimonials = () => {
-  const settings = {
-    infinite: true,
-    speed: 10000, // Slow transition speed
-    slidesToShow: 3, // Show 3 testimonials at a time
-    slidesToScroll: 1,
-    autoplay: true, // Automatically move the slides
-    autoplaySpeed: 500, // Fast autoplay speed
-    pauseOnHover: true, // Pause sliding when hovered
-    cssEase: "linear", // Linear easing for transitions
-    dots: false, // Remove dots
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 1,
-        },
-      },
-    ],
-  };
+  const itemsPerPage = 4; // Show 4 testimonials at a time
 
   return (
     <div className="py-10 bg-gray-50 text-black px-4 md:px-10">
       <h2 className="text-3xl text-center font-bold mb-6">
         What Our Customers Say
       </h2>
-      <Slider {...settings} className="mb-6">
-        {testimonialsData.map((testimonial, index) => (
-          <div
-            key={index}
-            className="bg-gradient-to-r from-purple-500 to-pink-300 shadow-lg rounded-lg w-64 h-72 mx-4 px-8 py-6 text-center"
-          >
-            <img
-              src={testimonial.img}
-              alt={testimonial.name}
-              className="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-4 border-white"
-            />
-            <p className="text-gray-800 italic mb-2">"{testimonial.content}"</p>
-            <p className="font-bold text-lg text-gray-900">
-              - {testimonial.name}
-            </p>
-          </div>
-        ))}
-      </Slider>
+      <div className="relative overflow-hidden">
+        <div
+          className="flex space-x-4 animate-scroll"
+          style={{
+            animation: "scroll 110s linear infinite",
+            width: `${testimonialsData.length * 25}%`, // Adjust width for smooth scrolling
+          }}
+        >
+          {testimonialsData.map((testimonial, index) => (
+            <div
+              key={index}
+              className="bg-gradient-to-r from-purple-500 to-pink-300 shadow-lg rounded-lg w-80 h-72 mx-4 px-8 py-6 text-center"
+            >
+              <img
+                src={testimonial.img}
+                alt={testimonial.name}
+                className="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-4 border-white"
+              />
+              <p className="text-gray-800 italic mb-2">
+                "{testimonial.content}"
+              </p>
+              <p className="font-bold text-lg text-gray-900">
+                - {testimonial.name}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

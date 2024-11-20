@@ -1,38 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import { FaMinus, FaPlus } from "react-icons/fa";
-import { useDispatch } from "react-redux";
-import { addToCart, buyNow } from "../redux/slices/cartSlice"; // Import actions
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, getCart } from "../redux/slices/cartSlice"; // Import actions
 import { useNavigate } from "react-router-dom";
 
 const PopUp = ({ item, onClose }) => {
   const [quantity, setQuantity] = useState(1);
-  const [rating, setRating] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const userId = useSelector((state) => state.user.userId); // Assuming userId is stored in Redux
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const cart = useSelector((state) => state.cart.cartItems);
 
   const incrementQuantity = () => setQuantity(quantity + 1);
   const decrementQuantity = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
 
-  useEffect(() => {
-    const randomRating = Math.floor(Math.random() * 5) + 2;
-    setRating(randomRating);
-  }, []);
-
-  const renderStars = (rating) => {
-    let stars = "★".repeat(rating);
-    return stars;
-  };
-
   const handleAddToCart = () => {
-    dispatch(addToCart({ item, quantity })); // addToCart checks if item exists in cart and increments quantity
-    onClose(); // Close the popup
+    if (!isLoggedIn) {
+      navigate("/login");
+    } else {
+      dispatch(addToCart(item, quantity, userId)); // Add item to cart
+      onClose();
+    }
   };
 
   const handleBuyNow = () => {
-    dispatch(buyNow({ item, quantity }));
+    dispatch(addToCart(item, quantity, userId)); // Add item to cart
+    navigate("/cart");
     onClose();
-    navigate("/checkout"); // Navigate to the checkout page
   };
 
   return (
@@ -42,64 +38,46 @@ const PopUp = ({ item, onClose }) => {
         onClick={onClose}
       ></div>
 
-      <div className="bg-white rounded-lg p-8 w-96 md:w-[500px] lg:w-[600px] shadow-2xl transform scale-95 transition-transform duration-500 ease-in-out z-20 animate-popIn">
-        <button onClick={onClose} className="text-black float-right">
-          <IoClose className="text-3xl font-extrabold"></IoClose>
-        </button>
-
-        <div className="flex items-center mb-3">
-          <img
-            src={item.img}
-            alt={item.content}
-            className="w-36 h-32 md:w-48 md:h-44 object-cover bg-white rounded-lg border-2 border-white shadow-md mr-4"
+      <div className="bg-white z-20 p-6 rounded-lg w-96">
+        <div className="relative">
+          <IoClose
+            className="absolute top-4 right-4 text-gray-600 text-2xl cursor-pointer"
+            onClick={onClose}
           />
-        </div>
-
-        <h3 className="text-3xl font-bold text-gray-800 mb-2 flex items-center">
-          {item.content}
-          <span className="text-yellow-500 text-3xl font-extrabold ml-2">
-            ({renderStars(rating)})
-          </span>
-        </h3>
-
-        <p className="text-gray-700 mb-2 text-[0.9rem]">{item.description}</p>
-
-        <div className="mb-4">
-          <p className="text-red-600 line-through text-xl">
-            Rs{" "}
-            {Math.floor(item.price + item.price * (0.1 + 0.1 * quantity)) *
-              quantity}
-          </p>
-          <p className="text-green-600 text-xl font-semibold">
-            Rs {item.price * quantity} /-
-          </p>
-        </div>
-
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center">
+          <img
+            className="w-full h-60 object-cover rounded-lg"
+            src={item.img}
+            alt={item.name}
+          />
+          <h2 className="text-xl mt-4 font-semibold">{item.name}</h2>
+          <p className="text-lg text-gray-500 mt-2">{item.description}</p>
+          <div className="mt-4">
+            <div className="flex items-center space-x-4">
+              <button
+                className="text-xl text-gray-600"
+                onClick={decrementQuantity}
+              >
+                <FaMinus />
+              </button>
+              <span className="text-lg">{quantity}</span>
+              <button
+                className="text-xl text-gray-600"
+                onClick={incrementQuantity}
+              >
+                <FaPlus />
+              </button>
+            </div>
+            <div className="mt-4 flex justify-between items-center">
+              <span className="text-xl font-semibold">${item.price}</span>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                onClick={handleAddToCart}
+              >
+                Add to Cart
+              </button>
+            </div>
             <button
-              onClick={decrementQuantity}
-              className="px-3 py-2 bg-gray-200 rounded"
-            >
-              <FaMinus />
-            </button>
-            <span className="px-4">{quantity}</span>
-            <button
-              onClick={incrementQuantity}
-              className="px-3 py-2 bg-gray-200 rounded"
-            >
-              <FaPlus />
-            </button>
-          </div>
-          <div className="flex gap-2">
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-              onClick={handleAddToCart}
-            >
-              Add to Cart
-            </button>
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className="bg-green-500 text-white w-full mt-4 py-2 rounded-md"
               onClick={handleBuyNow}
             >
               Buy Now

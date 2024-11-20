@@ -1,33 +1,33 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto:wght@400;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+::-webkit-scrollbar {
+  display: none;
+}
+
+
 
 body {
-    font-family: 'Inter', 'Roboto', sans-serif;
-    overflow:-moz-hidden-unscrollable
+  font-family: "Inter", "Roboto", sans-serif;
+  overflow: -moz-hidden-unscrollable;
 }
 
-
-.slick-slide>div{
-    margin: 0 10px;
-}
 
 /* index.css */
 
 .text-outline-black {
-    text-shadow: 
-        -1px -1px 0 black,
-        1px -1px 0 black,
-        -1px 1px 0 black,
-        1px 1px 0 black;
+  text-shadow:
+    -1px -1px 0 black,
+    1px -1px 0 black,
+    -1px 1px 0 black,
+    1px 1px 0 black;
 }
 
 .text-outline-gold {
-    text-shadow: 
-        -1px -1px 0 #FFD700,
-        1px -1px 0 #FFD700,
-        -1px 1px 0 #FFD700,
-        1px 1px 0 #FFD700;
+  text-shadow:
+    -1px -1px 0 #ffd700,
+    1px -1px 0 #ffd700,
+    -1px 1px 0 #ffd700,
+    1px 1px 0 #ffd700;
 }
-

@@ -4,14 +4,13 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { login } from "../redux/slices/userSlice.js";
-// axios.defaults.withCredentials = true;
+
 const Login = () => {
   const navigate = useNavigate();
   const [email, SetEmail] = useState("");
   const [password, SetPassword] = useState("");
   const [buttonText, SetButtonText] = useState("Login");
   const [isProcessing, SetIsProcessing] = useState(false);
-  const isLogin = useSelector((state) => state.user.isLoggedIn);
   const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
@@ -19,6 +18,7 @@ const Login = () => {
     SetButtonText("");
     SetIsProcessing(true);
     try {
+      // Make a POST request to login
       const response = await axios.post(
         "/api/v1/user/login",
         {
@@ -26,11 +26,19 @@ const Login = () => {
           password,
         },
         {
-          withCredentials: true, // This is the key to allow cookies to be included
+          withCredentials: true, // This is important for managing sessions
         }
       );
-      dispatch(login());
+
+      // Assuming the backend response contains user data such as userId, name, email, role
+      const { userId, name, email: userEmail } = response.data;
+
+      // Dispatch the login action with user details
+      dispatch(login({ userId, name, email: userEmail }));
+
+      // Navigate to home page after login
       navigate("/");
+
       console.log(response);
     } catch (error) {
       console.log("Error in fetching data");
