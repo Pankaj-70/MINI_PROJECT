@@ -142,4 +142,6 @@ const removeItemFromCart = asyncHandler(async (req, res) => {
   res.status(200).json(cart);
 });
 
+const getItems = asyncHandler(async (req, res) => {});
+
 export { addItemToCart, getCart, updateItemQuantity, removeItemFromCart };
