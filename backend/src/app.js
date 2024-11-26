@@ -17,10 +17,9 @@ app.use(express.static("public"));
 
 import userRouter from "./routes/user.routes.js";
 import cartRouter from "./routes/cart.routes.js";
+import productRouter from "./routes/product.routes.js";
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/cart", cartRouter);
+app.use("/api/v1/product", productRouter);
 
-app.get("/api/v1/user/add", (req, res) => {
-  res.send("Working");
-});
 export { app };

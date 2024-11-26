@@ -23,7 +23,14 @@ const productSchema = new mongoose.Schema(
     },
     stock: {
       type: Number,
-      default: 6,
+      min: 1,
+    },
+    description: {
+      type: String,
+    },
+    category: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }
