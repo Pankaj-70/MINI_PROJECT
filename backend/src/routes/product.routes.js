@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { upload } from "../utils/cloudinary.js";
+import { upload } from "../middlewares/multer.middleware.js";
 import {
   addNewProduct,
   deleteProduct,
@@ -8,7 +8,7 @@ import {
 
 const router = Router();
 
-router.post("/add", addNewProduct);
+router.post("/add", upload.single("img"), addNewProduct);
 router.get("/fetch", fetchAllProducts);
 router.delete("/delete/:id", deleteProduct);
 

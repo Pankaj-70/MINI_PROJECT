@@ -6,8 +6,9 @@ const addNewProduct = asyncHandler(async (req, res) => {
   const { img: image, name, stock, price, description, category } = req.body;
 
   let img = null;
+
   if (req.file) {
-    img = await imageUploadUtil(req.file.buffer);
+    img = await imageUploadUtil(req.file);
   }
   const newlyCreatedProduct = new Product({
     name,
