@@ -1,6 +1,7 @@
 import { Product } from "../models/productSchema.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { imageUploadUtil } from "../utils/cloudinary.js";
+import mongoose from "mongoose";
 
 const addNewProduct = asyncHandler(async (req, res) => {
   const { img: image, name, stock, price, description, category } = req.body;
@@ -36,16 +37,19 @@ const fetchAllProducts = asyncHandler(async (req, res) => {
 
 const deleteProduct = asyncHandler(async (req, res) => {
   const id = req.params;
-  const productToDelete = await Product.findByIdAndDelete(id);
+  const objectId = new mongoose.Types.ObjectId(id);
+  const productToDelete = await Product.findByIdAndDelete(objectId);
   if (!productToDelete) {
     return res.status(400).json({
       success: false,
       message: "Product not found",
+      id,
     });
   }
   return res.status(200).json({
     success: true,
     message: "Product deleted successfully",
+    id,
   });
 });
 

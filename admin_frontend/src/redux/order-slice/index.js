@@ -26,9 +26,8 @@ export const fetchAllProducts = createAsyncThunk(
 
 export const deleteProduct = createAsyncThunk(
   "/products/deleteProduct",
-  async (id) => {
-    const result = await axios.delete(`/api/v1/product/delete/${id}`);
-
+  async (_id) => {
+    const result = await axios.delete(`/api/v1/product/delete/${_id}`);
     return result?.data;
   }
 );
@@ -49,6 +48,18 @@ const AdminProductsSlice = createSlice({
       .addCase(fetchAllProducts.rejected, (state, action) => {
         state.isLoading = false;
         state.productList = [];
+      })
+      .addCase(deleteProduct.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.productList = state.productList.filter(
+          (product) => product._id !== action.payload.id.id
+        );
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.isLoading = false;
       });
   },
 });

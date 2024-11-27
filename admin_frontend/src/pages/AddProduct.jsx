@@ -1,8 +1,8 @@
 import React from "react";
-import SidePanel from "../components/SidePanel"; // Assuming you have a side panel component for navigation
-import { useDispatch } from "react-redux";
+import Navbar from "../components/Navbar"; // Assuming you have a side panel component for navigation
 import { addNewProduct, fetchAllProducts } from "../redux/order-slice";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 const AddProduct = () => {
   const dispatch = useDispatch();
   const [productName, setProductName] = useState("");
@@ -12,10 +12,6 @@ const AddProduct = () => {
   const [productStock, setProductStock] = useState("");
   const [productCategory, setProductCategory] = useState(""); // Updated state for category
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    dispatch(fetchAllProducts());
-  }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -61,7 +57,7 @@ const AddProduct = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-600 to-indigo-700">
-      <SidePanel />
+      <Navbar />
       <div className="w-full pt-6 flex justify-center">
         <div className="w-full max-w-4xl p-6 bg-white rounded-xl shadow-xl text-black">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">
