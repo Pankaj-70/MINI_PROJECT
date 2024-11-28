@@ -1,20 +1,23 @@
 import React, { useState } from "react";
-import PopUp from "./PopUp"; // PopUp component for displaying item details
+import PopUp from "./PopUp";
 
 const ImageSlider = ({ name, title, description }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const itemsPerPage = 6;
-  const totalItems = name.length;
+  const totalItems = name?.length || 0;
 
-  // Move to the next set of items (circular rotation)
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % totalItems);
+    if (totalItems > 0) {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % totalItems);
+    }
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + totalItems) % totalItems);
+    if (totalItems > 0) {
+      setCurrentIndex((prevIndex) => (prevIndex - 1 + totalItems) % totalItems);
+    }
   };
 
   const handleItemClick = (item) => {
@@ -25,11 +28,11 @@ const ImageSlider = ({ name, title, description }) => {
     setSelectedItem(null);
   };
 
-  // Circularly wrap around the array to display the next 6 items
   const getItemsToDisplay = () => {
+    if (!Array.isArray(name) || name.length === 0) return [];
     let displayItems = [];
     for (let i = 0; i < itemsPerPage; i++) {
-      const index = (currentIndex + i) % totalItems; // This ensures circular rotation
+      const index = (currentIndex + i) % totalItems;
       displayItems.push(name[index]);
     }
     return displayItems;
@@ -41,14 +44,9 @@ const ImageSlider = ({ name, title, description }) => {
         {title}
       </h2>
       <p className="text-lg text-gray-200 mb-4 font-poppins">{description}</p>
-
-      {/* Image Slider */}
       <div className="relative">
         <div className="flex overflow-hidden transition-all duration-500 ease-in-out">
-          {/* Show 6 items at once */}
           <div className="flex space-x-4">
-            {" "}
-            {/* Added space between slides */}
             {getItemsToDisplay().map((item, index) => (
               <div
                 key={index}
@@ -56,19 +54,17 @@ const ImageSlider = ({ name, title, description }) => {
                 onClick={() => handleItemClick(item)}
               >
                 <img
-                  src={item.img}
-                  alt={item.name}
-                  className="w-36 h-32 md:w-48 md:h-40 lg:w-64 lg:h-56 object-cover bg-white rounded-lg border-2 border-white shadow-md mb-3" // Enlarged image size
+                  src={item.img || ""}
+                  alt={item.name || "Unnamed"}
+                  className="w-36 h-32 md:w-48 md:h-40 lg:w-64 lg:h-56 object-cover bg-white rounded-lg border-2 border-white shadow-md mb-3"
                 />
                 <p className="text-center p-2 text-black bg-green-400 font-transition duration-300 w-36 md:w-48">
-                  {item.name}
+                  {item.name || "Unnamed"}
                 </p>
               </div>
             ))}
           </div>
         </div>
-
-        {/* Navigation Buttons */}
         <button
           className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-2 rounded-full"
           onClick={prevSlide}
@@ -82,8 +78,6 @@ const ImageSlider = ({ name, title, description }) => {
           &gt;
         </button>
       </div>
-
-      {/* Popup for selected item */}
       {selectedItem && <PopUp item={selectedItem} onClose={closePopUp} />}
     </div>
   );

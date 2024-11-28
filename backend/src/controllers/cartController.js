@@ -4,16 +4,14 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const addItemToCart = asyncHandler(async (req, res) => {
   const { userId, quantity, item: prod } = req.body;
-  let productId = prod.id || null; // Ensure prod.id is used if available
+  let productId = prod.id || null;
   let product = await Product.findById(productId);
 
-  // If product is not found, create a new one with the provided prod data
   if (!product) {
     if (!prod || !prod.name || !prod.price || !prod.img) {
       return res.status(400).json({ message: "Product data is incomplete" });
     }
 
-    // Create a new product and get the id
     product = await Product.create({
       name: prod.name,
       price: prod.price,

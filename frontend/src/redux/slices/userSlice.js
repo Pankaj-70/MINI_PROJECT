@@ -5,7 +5,6 @@ const initialState = {
   userId: null, // userId will be stored when user logs in
   name: "", // user's name
   email: "", // user's email
-  role: "", // user role (can be 'user', 'admin', etc.)
 };
 
 const userSlice = createSlice({
@@ -13,12 +12,11 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      const { userId, name, email, role } = action.payload;
+      const { userId, name, email } = action.payload;
       state.isLoggedIn = true;
       state.userId = userId;
       state.name = name;
       state.email = email;
-      state.role = role;
     },
     logout: (state) => {
       state.isLoggedIn = false;

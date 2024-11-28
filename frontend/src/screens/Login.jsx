@@ -18,7 +18,6 @@ const Login = () => {
     SetButtonText("");
     SetIsProcessing(true);
     try {
-      // Make a POST request to login
       const response = await axios.post(
         "/api/v1/user/login",
         {
@@ -29,17 +28,14 @@ const Login = () => {
           withCredentials: true, // This is important for managing sessions
         }
       );
-
       // Assuming the backend response contains user data such as userId, name, email, role
-      const { userId, name, email: userEmail } = response.data;
+      const { _id: userId, fullName: name } = response.data.data.user;
 
       // Dispatch the login action with user details
-      dispatch(login({ userId, name, email: userEmail }));
+      dispatch(login({ userId, name, email }));
 
       // Navigate to home page after login
       navigate("/");
-
-      console.log(response);
     } catch (error) {
       console.log("Error in fetching data");
       if (error.response) {

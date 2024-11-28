@@ -163,21 +163,27 @@ const Home = () => {
             viewport={{ once: true }}
             variants={fadeIn}
           >
-            {/* <ImageSlider
-              title="Top Picks"
-              name={topPicks}
-              description="Discover our top culinary selections that you won't want to miss!"
-            /> */}
-            {/* <ImageSlider
-              title="Vegetarian Delights"
-              name={vegetarian}
-              description="Explore a variety of delicious vegetarian options crafted with the freshest ingredients!"
-            /> */}
-            {/* <ImageSlider
-              title="Non-Vegetarian Delicacies"
-              name={nonVegetarian}
-              description="Indulge in our mouthwatering non-vegetarian dishes, perfect for meat lovers!"
-            /> */}
+            {
+              <ImageSlider
+                title="Top Picks"
+                name={topPicks}
+                description="Discover our top culinary selections that you won't want to miss!"
+              />
+            }
+            {
+              <ImageSlider
+                title="Vegetarian Delights"
+                name={vegetarian}
+                description="Explore a variety of delicious vegetarian options crafted with the freshest ingredients!"
+              />
+            }
+            {
+              <ImageSlider
+                title="Non-Vegetarian Delicacies"
+                name={nonVegetarian}
+                description="Indulge in our mouthwatering non-vegetarian dishes, perfect for meat lovers!"
+              />
+            }
           </motion.div>
         </div>
       )}
