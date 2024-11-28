@@ -1,13 +1,30 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import Loading from "../components/Loading";
+
 const Home = () => {
+  const navigate = useNavigate();
   const items = useSelector((state) => state.adminOrder.productList.length);
+  const isAuthenticated = useSelector(
+    (state) => state.autheticate.isAuthenticated
+  );
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
+
+  if (!isAuthenticated) {
+    return <Loading></Loading>;
+  }
+
   return (
     <div className="bg-gray-100 min-h-screen">
       <Navbar />
       <div className="px-6 py-4">
-        {/* Welcome Section */}
         <div className="text-center my-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">
             Welcome to the Admin Dashboard
@@ -16,8 +33,6 @@ const Home = () => {
             Manage all aspects of your food delivery website from this panel.
           </p>
         </div>
-
-        {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
           <div className="bg-blue-600 text-white p-6 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300">
             <h2 className="text-2xl font-semibold">Total Products</h2>
@@ -32,8 +47,6 @@ const Home = () => {
             <p className="text-4xl font-bold mt-2">120</p>
           </div>
         </div>
-
-        {/* Latest Orders */}
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">
             Latest Orders
@@ -69,8 +82,6 @@ const Home = () => {
             </tbody>
           </table>
         </div>
-
-        {/* Quick Actions */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
           <div className="bg-purple-600 text-white p-6 rounded-lg shadow-lg hover:bg-purple-700 transition duration-300 text-center">
             <h3 className="text-lg font-semibold mb-2">Manage Products</h3>

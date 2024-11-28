@@ -1,10 +1,27 @@
 import React from "react";
 import Navbar from "../components/Navbar"; // Assuming you have a side panel component for navigation
-import { addNewProduct, fetchAllProducts } from "../redux/order-slice";
+import { addNewProduct } from "../redux/order-slice";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 const AddProduct = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isAuthenticated = useSelector(
+    (state) => state.autheticate.isAuthenticated
+  );
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
+
+  if (!isAuthenticated) {
+    return <Loading></Loading>;
+  }
+
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [productPrice, setProductPrice] = useState("");

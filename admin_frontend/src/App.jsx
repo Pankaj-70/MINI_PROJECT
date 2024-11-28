@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { fetchAllProducts } from "./redux/order-slice";
 import Products from "./pages/Products";
+import Login from "./pages/Login";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -18,9 +19,10 @@ const App = () => {
     <div>
       <Router>
         <Routes>
-          <Route path="/" element={<Home />}></Route>
+          <Route path="/home" element={<Home />}></Route>
           <Route path="/products" element={<Products />}></Route>
           <Route path="/add-product" element={<AddProduct />}></Route>
+          <Route path="/" element={<Login />}></Route>
         </Routes>
       </Router>
     </div>

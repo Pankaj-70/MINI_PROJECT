@@ -18,6 +18,8 @@ import Notifications from "./screens/Notifications";
 import Support from "./screens/Support";
 import CheckoutForm from "./screens/CheckOutForm";
 import CartPage from "./screens/CartPage";
+import { useEffect } from "react";
+import { fetchAllProducts } from "./redux/slices/productSlice";
 
 function App() {
   return (

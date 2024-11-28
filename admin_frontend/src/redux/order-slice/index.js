@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const initialState = {
+const adminInitialState = {
   isLoading: false,
   productList: [],
 };
@@ -34,8 +34,8 @@ export const deleteProduct = createAsyncThunk(
 
 const AdminProductsSlice = createSlice({
   name: "adminProducts",
-  initialState,
-  reducers: {},
+  initialState: adminInitialState,
+  reducers: [],
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllProducts.pending, (state) => {

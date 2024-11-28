@@ -1,13 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Navbar from "../components/Navbar";
 import { FaSearch } from "react-icons/fa";
 import ProductCard from "../components/ProductCard";
-import axios from "axios";
 import { deleteProduct } from "../redux/order-slice";
+import { useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 
 const Products = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isAuthenticated = useSelector(
+    (state) => state.autheticate.isAuthenticated
+  );
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
+
+  if (!isAuthenticated) {
+    return <Loading></Loading>;
+  }
+
   const productList = useSelector((state) => state.adminOrder.productList);
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleProducts, setVisibleProducts] = useState({
@@ -55,7 +71,6 @@ const Products = () => {
 
   const handleDelete = (_id) => {
     const res = dispatch(deleteProduct(_id));
-    console.log(res);
   };
   return (
     <div className="flex flex-col justify-center">

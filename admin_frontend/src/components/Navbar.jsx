@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   FaList,
   FaPlus,
@@ -7,8 +9,15 @@ import {
   FaUserShield,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { toggleAuth } from "../redux/auth-slice";
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch(toggleAuth(false));
+    navigate("/");
+  };
   return (
     <div className="bg-gray-800 text-white flex items-center justify-between px-6 py-3 shadow-md">
       {/* Left side: Admin Panel logo */}
@@ -20,7 +29,7 @@ const Navbar = () => {
       {/* Center: Navbar Links */}
       <div className="flex items-center justify-between w-1/3">
         <Link
-          to="/"
+          to="/home"
           className="flex items-center gap-2 p-2 rounded hover:bg-gray-700"
         >
           <FaHome />
@@ -44,7 +53,10 @@ const Navbar = () => {
 
       {/* Right side: Logout button */}
       <div className="flex items-center justify-end w-1/3">
-        <button className="flex items-center gap-2 p-2 bg-red-600 hover:bg-red-700 rounded">
+        <button
+          className="flex items-center gap-2 p-2 bg-red-600 hover:bg-red-700 rounded"
+          onClick={handleLogout}
+        >
           <FaSignOutAlt />
           <span>Logout</span>
         </button>
