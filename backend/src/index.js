@@ -4,6 +4,7 @@ import { app } from "./app.js";
 dotenv.config({
   path: "./env",
 });
+
 connectDatabase()
   .then(() => {
     console.log("Database connected successfully");

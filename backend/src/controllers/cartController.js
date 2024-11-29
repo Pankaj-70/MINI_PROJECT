@@ -54,11 +54,11 @@ const addItemToCart = asyncHandler(async (req, res) => {
 
 const getCart = asyncHandler(async (req, res) => {
   const userId = req.params.id;
-  const cart = await Cart.findOne({ userId });
-  if (!cart) {
-    res.status(404).json({ message: "Cart not found" });
-    return;
-  }
+  const cart = await Cart.findOne({ userId }).populate("items.productId");
+  // if (!cart) {
+  //   res.status(404).json({ message: "Cart not found" });
+  //   return;
+  // }
 
   res.status(200).json(cart);
 });

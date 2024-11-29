@@ -76,7 +76,7 @@ const CartPage = () => {
                 className="flex items-center justify-between bg-gray-100 p-4 rounded-md shadow-md hover:shadow-lg transition-transform duration-300"
               >
                 <img
-                  src={item.img}
+                  src={item.productId.img}
                   alt={item.name}
                   className="w-20 h-20 object-cover rounded-md mr-4"
                 />
