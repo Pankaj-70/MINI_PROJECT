@@ -20,7 +20,8 @@ import CheckoutForm from "./screens/CheckOutForm";
 import CartPage from "./screens/CartPage";
 import { useEffect } from "react";
 import { fetchAllProducts } from "./redux/slices/productSlice";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
     <>
@@ -50,6 +51,7 @@ function App() {
           </main>
         </Router>
         <Footer />
+        <ToastContainer />
       </div>
     </>
   );
