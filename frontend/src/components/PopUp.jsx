@@ -16,6 +16,7 @@ const PopUp = ({ item, onClose }) => {
   const incrementQuantity = () => setQuantity(quantity + 1);
   const decrementQuantity = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
 
+  console.log(item);
   const handleAddToCart = () => {
     if (!isLoggedIn) {
       navigate("/login");

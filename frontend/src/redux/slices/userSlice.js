@@ -2,9 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isLoggedIn: false,
-  userId: null, // userId will be stored when user logs in
-  name: "", // user's name
-  email: "", // user's email
+  userId: null,
+  name: "",
+  email: "",
 };
 
 const userSlice = createSlice({
@@ -26,10 +26,9 @@ const userSlice = createSlice({
       state.role = "";
     },
     updateUserInfo: (state, action) => {
-      const { name, email, role } = action.payload;
+      const { name, email } = action.payload;
       state.name = name || state.name;
       state.email = email || state.email;
-      state.role = role || state.role;
     },
   },
 });

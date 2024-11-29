@@ -19,7 +19,7 @@ const Navbar = () => {
   };
 
   // Get total number of items in the cart
-  const totalCartItems = cartItems.reduce(
+  const totalCartItems = cartItems?.reduce(
     (total, item) => total + item.quantity,
     0
   );

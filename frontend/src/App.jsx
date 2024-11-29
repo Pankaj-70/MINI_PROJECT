@@ -20,8 +20,35 @@ import CheckoutForm from "./screens/CheckOutForm";
 import CartPage from "./screens/CartPage";
 import { useEffect } from "react";
 import { fetchAllProducts } from "./redux/slices/productSlice";
+import { login, logout } from "./redux/slices/userSlice";
+import { getCart, setLoading } from "./redux/slices/cartSlice";
+import { useDispatch } from "react-redux";
+import axios from "axios";
 
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get("/api/v1/user/getuser");
+        if (response.data.success) {
+          const userId = response.data.data._id;
+          dispatch(login({ userId }));
+          if (userId) {
+            dispatch(getCart(userId));
+          }
+        } else {
+          dispatch(logout());
+        }
+      } catch (error) {
+        dispatch(logout());
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUser();
+  }, []);
+
   return (
     <>
       <div className="flex flex-col min-h-screen bg-gray-700 text-white">
