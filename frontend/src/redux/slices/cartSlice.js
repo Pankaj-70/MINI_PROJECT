@@ -16,9 +16,11 @@ const cartSlice = createSlice({
     },
     addToCartSuccess: (state, action) => {
       const { item, quantity } = action.payload;
+      console.log("HEY");
       const existingItem = state.cartItems.find(
         (cartItem) => cartItem.id === item.id
       );
+      console.log("NOT HEY");
       if (existingItem) {
         existingItem.quantity += quantity;
       } else {
@@ -64,7 +66,7 @@ export default cartSlice.reducer;
 export const getCart = (userId) => async (dispatch) => {
   try {
     dispatch(setLoading());
-    const response = await axios.get("/api/v1/cart/getcart", {
+    const response = await axios.get(`/api/v1/cart/getcart/${userId}`, {
       withCredentials: true,
     });
     dispatch(setCartItems(response.data.cartItems));
@@ -77,14 +79,8 @@ export const addToCart = (item, quantity, userId) => async (dispatch) => {
   try {
     const response = await axios.post(
       "/api/v1/cart/add",
-      {
-        item,
-        quantity,
-        userId,
-      },
-      {
-        withCredentials: true,
-      }
+      { item, quantity, userId },
+      { withCredentials: true }
     );
 
     const updatedItem = { ...item, id: response.data.cart._id };

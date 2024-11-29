@@ -4,25 +4,9 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const addItemToCart = asyncHandler(async (req, res) => {
   const { userId, quantity, item: prod } = req.body;
-  let productId = prod.id || null;
+  let productId = prod._id || null;
   let product = await Product.findById(productId);
 
-  if (!product) {
-    if (!prod || !prod.name || !prod.price || !prod.img) {
-      return res.status(400).json({ message: "Product data is incomplete" });
-    }
-
-    product = await Product.create({
-      name: prod.name,
-      price: prod.price,
-      img: prod.img,
-    });
-
-    // Add the product's id to the response object
-    productId = product._id;
-  }
-
-  // Check for stock availability
   if (quantity > product.stock) {
     return res
       .status(400)
@@ -69,9 +53,8 @@ const addItemToCart = asyncHandler(async (req, res) => {
 });
 
 const getCart = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
-
-  const cart = await Cart.findOne({ userId }).populate("items.productId");
+  const userId = req.params.id;
+  const cart = await Cart.findOne({ userId });
   if (!cart) {
     res.status(404).json({ message: "Cart not found" });
     return;
