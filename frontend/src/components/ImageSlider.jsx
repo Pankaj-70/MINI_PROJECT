@@ -58,9 +58,12 @@ const ImageSlider = ({ name, title, description }) => {
                   alt={item.name || "Unnamed"}
                   className="w-36 h-32 md:w-48 md:h-40 lg:w-64 lg:h-56 object-cover bg-white rounded-lg border-2 border-white shadow-md mb-3"
                 />
-                <p className="text-center p-2 text-black bg-green-400 font-transition duration-300 w-36 md:w-48">
+                <div
+                  className="bg-green-400 text-black text-center p-2 font-transition duration-300"
+                  style={{ width: "inherit" }}
+                >
                   {item.name || "Unnamed"}
-                </p>
+                </div>
               </div>
             ))}
           </div>
