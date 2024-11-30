@@ -19,7 +19,6 @@ const cartSlice = createSlice({
       const existingItem = state.cart.find(
         (cartItem) => cartItem.id === item.id
       );
-      console.log("NOT HEY");
       if (existingItem) {
         existingItem.quantity += quantity;
       } else {
@@ -101,16 +100,15 @@ export const removeFromCart = (itemId, userId) => async (dispatch) => {
 };
 
 export const updateItemQuantity =
-  (itemId, quantity, userId) => async (dispatch) => {
+  (productId, quantity, userId) => async (dispatch) => {
     try {
-      const response = await axios.put("/api/v1/cart/update", {
-        itemId,
+      const response = await axios.patch("/api/v1/cart/update", {
+        productId,
         quantity,
         userId,
       });
-      dispatch(
-        updateQuantitySuccess({ itemId, quantity: response.data.quantity })
-      );
+      console.log(response);
+      dispatch(updateQuantitySuccess({ itemId, quantity: response.data.ret }));
     } catch (error) {
       dispatch(setError(error.message));
     }

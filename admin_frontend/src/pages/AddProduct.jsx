@@ -1,10 +1,11 @@
-import React from "react";
-import Navbar from "../components/Navbar"; // Assuming you have a side panel component for navigation
-import { addNewProduct } from "../redux/order-slice";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import Loading from "../components/Loading";
+import { addNewProduct } from "../redux/order-slice";
+import { toast } from "react-toastify";
+
 const AddProduct = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const AddProduct = () => {
   }, [isAuthenticated, navigate]);
 
   if (!isAuthenticated) {
-    return <Loading></Loading>;
+    return <Loading />;
   }
 
   const [productName, setProductName] = useState("");
@@ -27,7 +28,8 @@ const AddProduct = () => {
   const [productPrice, setProductPrice] = useState("");
   const [productImage, setProductImage] = useState(null);
   const [productStock, setProductStock] = useState("");
-  const [productCategory, setProductCategory] = useState(""); // Updated state for category
+  const [productCategory, setProductCategory] = useState("");
+  const [productCalories, setProductCalories] = useState("");
   const [error, setError] = useState("");
 
   const handleImageChange = (e) => {
@@ -43,13 +45,13 @@ const AddProduct = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validation
     if (
       !productName ||
       !productDescription ||
       !productPrice ||
       !productImage ||
-      !productCategory
+      !productCategory ||
+      !productCalories
     ) {
       setError("Please fill out all required fields.");
       return;
@@ -60,7 +62,6 @@ const AddProduct = () => {
       return;
     }
 
-    // Example of form submission logic (Backend logic to handle the product can be added here)
     const formData = new FormData();
     formData.append("name", productName);
     formData.append("description", productDescription);
@@ -68,8 +69,20 @@ const AddProduct = () => {
     formData.append("img", productImage);
     formData.append("stock", productStock);
     formData.append("category", productCategory);
-    const res = dispatch(addNewProduct(formData));
-    alert("Product added successfully!");
+    formData.append("calories", productCalories);
+
+    dispatch(addNewProduct(formData));
+    setProductName("");
+    setProductDescription("");
+    setProductPrice("");
+    setProductImage(null);
+    setProductStock("");
+    setProductCategory("");
+    setProductCalories("");
+    toast.success("Product added successfully!", {
+      autoClose: 600,
+      position: "bottom-right",
+    });
   };
 
   return (
@@ -127,6 +140,45 @@ const AddProduct = () => {
               </div>
             </div>
 
+            <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
+              <div>
+                <label
+                  htmlFor="productCalories"
+                  className="text-lg font-medium mb-2 text-gray-800"
+                >
+                  Product Calories (kcal)
+                </label>
+                <input
+                  type="number"
+                  id="productCalories"
+                  value={productCalories}
+                  onChange={(e) => setProductCalories(e.target.value)}
+                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter calories"
+                  required
+                  min="1"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="productStock"
+                  className="text-lg font-medium mb-2 text-gray-800"
+                >
+                  Product Stock
+                </label>
+                <input
+                  type="number"
+                  id="productStock"
+                  value={productStock}
+                  onChange={(e) => setProductStock(e.target.value)}
+                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter product stock"
+                  min="1"
+                />
+              </div>
+            </div>
+
             <div className="mb-4">
               <label
                 htmlFor="productDescription"
@@ -147,24 +199,6 @@ const AddProduct = () => {
             <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
               <div>
                 <label
-                  htmlFor="productStock"
-                  className="text-lg font-medium mb-2 text-gray-800"
-                >
-                  Product Stock
-                </label>
-                <input
-                  type="number"
-                  id="productStock"
-                  value={productStock}
-                  onChange={(e) => setProductStock(e.target.value)}
-                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter product stock"
-                  min="1"
-                />
-              </div>
-
-              <div>
-                <label
                   htmlFor="productCategory"
                   className="text-lg font-medium mb-2 text-gray-800"
                 >
@@ -183,32 +217,31 @@ const AddProduct = () => {
                   <option value="Non-Vegetarian">Non-Vegetarian</option>
                 </select>
               </div>
-            </div>
 
-            <div className="mb-4">
-              <label
-                htmlFor="productImage"
-                className="text-lg font-medium mb-2 text-gray-800"
-              >
-                Product Image
-              </label>
-              <div className="flex items-center justify-between">
+              <div>
+                <label
+                  htmlFor="productImage"
+                  className="text-lg font-medium mb-2 text-gray-800"
+                >
+                  Product Image
+                </label>
                 <input
                   type="file"
                   id="productImage"
                   onChange={handleImageChange}
-                  className="p-3 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   accept="image/*"
                   required
                 />
-                <button
-                  type="submit"
-                  className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg w-full md:w-auto transition duration-200 ease-in-out transform hover:scale-105"
-                >
-                  Add Product
-                </button>
               </div>
             </div>
+
+            <button
+              type="submit"
+              className="bg-green-700 hover:bg-green-600 text-white text-[1.1rem] py-3 px-6 rounded-lg w-full"
+            >
+              Add Product
+            </button>
           </form>
         </div>
       </div>

@@ -32,6 +32,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    calorie: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );

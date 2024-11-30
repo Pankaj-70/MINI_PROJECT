@@ -4,9 +4,9 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const addItemToCart = asyncHandler(async (req, res) => {
   const { userId, quantity, item: prod } = req.body;
-  let productId = prod._id || null;
+  let productId = prod._id;
   let product = await Product.findById(productId);
-
+  console.log("Enter");
   if (quantity > product.stock) {
     return res
       .status(400)
@@ -55,17 +55,11 @@ const addItemToCart = asyncHandler(async (req, res) => {
 const getCart = asyncHandler(async (req, res) => {
   const userId = req.params.id;
   const cart = await Cart.findOne({ userId }).populate("items.productId");
-  // if (!cart) {
-  //   res.status(404).json({ message: "Cart not found" });
-  //   return;
-  // }
-
   res.status(200).json(cart);
 });
 
 const updateItemQuantity = asyncHandler(async (req, res) => {
   const { userId, productId, quantity } = req.body;
-
   const cart = await Cart.findOne({ userId });
   if (!cart) {
     res.status(404).json({ message: "Cart not found" });
@@ -89,15 +83,15 @@ const updateItemQuantity = asyncHandler(async (req, res) => {
   );
 
   if (itemIndex > -1) {
-    cart.items[itemIndex].quantity = quantity;
+    cart.items[itemIndex].quantity = quantity + cart.items[itemIndex].quantity;
     cart.items[itemIndex].totalPrice = quantity * productPrice;
   } else {
     res.status(404).json({ message: "Item not found in cart" });
     return;
   }
-
+  const ret = cart.items[itemIndex].quantity;
   await cart.save();
-  res.status(200).json(cart);
+  res.status(200).json({ ret });
 });
 
 const removeItemFromCart = asyncHandler(async (req, res) => {

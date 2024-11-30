@@ -9,7 +9,11 @@ import {
   FaCheck,
   FaShoppingCart,
 } from "react-icons/fa";
-import { addToCart, removeFromCart } from "../redux/slices/cartSlice";
+import {
+  addToCart,
+  removeFromCart,
+  updateItemQuantity,
+} from "../redux/slices/cartSlice";
 
 const selectCartItems = createSelector(
   (state) => state.cart.cartItems,
@@ -18,11 +22,9 @@ const selectCartItems = createSelector(
 
 const CartPage = () => {
   const cartItems = useSelector(selectCartItems);
-  console.log(cartItems);
   const dispatch = useDispatch();
   const [showPopup, setShowPopup] = useState(false);
   const userId = useSelector((state) => state.user.userId);
-
   const handleOrderButton = () => {
     cartItems.forEach((item) => {
       dispatch(removeFromCart(item));
@@ -31,11 +33,14 @@ const CartPage = () => {
     setTimeout(() => setShowPopup(false), 3000);
   };
 
-  const incrementQuantity = (item) =>
-    dispatch(addToCart({ item, quantity: 1 }));
+  const incrementQuantity = (item) => {
+    const productId = item.productId._id;
+    dispatch(updateItemQuantity(productId, 1, userId));
+  };
   const decrementQuantity = (item) => {
+    const productId = item.productId._id;
     if (item.quantity > 1) {
-      dispatch(addToCart({ item, quantity: -1 }));
+      dispatch(updateItemQuantity(productId, -1, userId));
     }
   };
   const handleDeleteItem = (item) => dispatch(removeFromCart(item, userId));
@@ -77,14 +82,16 @@ const CartPage = () => {
               >
                 <img
                   src={item.productId.img}
-                  alt={item.name}
+                  alt={item.productId.name}
                   className="w-20 h-20 object-cover rounded-md mr-4"
                 />
                 <div className="flex-1">
                   <h3 className="text-xl font-semibold text-gray-800">
-                    {item.name}
+                    {item.productId.name}
                   </h3>
-                  <p className="text-gray-600 text-sm">Price: ₹{item.price}</p>
+                  <p className="text-gray-600 text-sm">
+                    Price: ₹{item.productId.price}
+                  </p>
                   <div className="flex items-center mt-2 space-x-3">
                     <button
                       onClick={() => decrementQuantity(item)}
@@ -105,7 +112,7 @@ const CartPage = () => {
                 </div>
                 <div className="flex items-center space-x-4">
                   <p className="text-lg font-semibold text-gray-800">
-                    ₹{item.price * item.quantity}
+                    ₹{item.productId.price * item.quantity}
                   </p>
                   <button
                     onClick={() => handleDeleteItem(item)}

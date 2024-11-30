@@ -14,15 +14,15 @@ const Products = () => {
     (state) => state.authenticate.isAuthenticated
   );
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-    }
-  }, [isAuthenticated, navigate]);
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     navigate("/login");
+  //   }
+  // }, [isAuthenticated, navigate]);
 
-  if (!isAuthenticated) {
-    return <Loading></Loading>;
-  }
+  // if (!isAuthenticated) {
+  //   return <Loading></Loading>;
+  // }
 
   const productList = useSelector((state) => state.adminOrder.productList);
   const [searchTerm, setSearchTerm] = useState("");

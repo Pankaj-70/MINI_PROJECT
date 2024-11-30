@@ -4,7 +4,15 @@ import { imageUploadUtil } from "../utils/cloudinary.js";
 import mongoose from "mongoose";
 
 const addNewProduct = asyncHandler(async (req, res) => {
-  const { img: image, name, stock, price, description, category } = req.body;
+  const {
+    img: image,
+    name,
+    stock,
+    price,
+    description,
+    category,
+    calories: calorie,
+  } = req.body;
 
   let img = null;
 
@@ -18,6 +26,7 @@ const addNewProduct = asyncHandler(async (req, res) => {
     stock,
     description,
     category,
+    calorie,
   });
 
   await newlyCreatedProduct.save();

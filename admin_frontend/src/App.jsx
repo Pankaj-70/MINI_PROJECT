@@ -11,25 +11,25 @@ import Products from "./pages/Products";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { toggleAuth } from "./redux/auth-slice";
+import axios from "axios";
 
 const App = () => {
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector(
-    (state) => state.authenticate.isAuthenticated
-  );
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          "api/v1/admin/getLoginUser",
+          "api/v1/admin/getuser",
           {},
           {
             withCredentials: true,
           }
         );
+
         dispatch(toggleAuth(true));
-        console.log(response);
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
 
       dispatch(fetchAllProducts());
     };

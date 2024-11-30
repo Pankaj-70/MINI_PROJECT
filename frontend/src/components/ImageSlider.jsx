@@ -5,7 +5,7 @@ const ImageSlider = ({ name, title, description }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 6;
   const totalItems = name?.length || 0;
 
   const nextSlide = () => {
