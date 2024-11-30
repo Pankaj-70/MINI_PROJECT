@@ -19,9 +19,11 @@ import userRouter from "./routes/user.routes.js";
 import cartRouter from "./routes/cart.routes.js";
 import productRouter from "./routes/product.routes.js";
 import emailRouter from "./routes/mail.routes.js";
+import adminUserRouter from "./routes/admin/user.routes.js";
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/cart", cartRouter);
 app.use("/api/v1/product", productRouter);
 app.use("/api/v1/mail", emailRouter);
+app.use("/api/v1/admin", adminUserRouter);
 
 export { app };

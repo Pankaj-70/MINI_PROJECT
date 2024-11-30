@@ -10,13 +10,22 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import { toggleAuth } from "../redux/auth-slice";
-
+import axios from "axios";
+import { toast } from "react-toastify";
 const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleLogout = () => {
-    dispatch(toggleAuth(false));
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post("api/v1/admin/logout", {
+        withCredentials: true,
+      });
+      toast.success(response.data.message, {
+        autoClose: 1000,
+      });
+      dispatch(toggleAuth(false));
+      navigate("/login");
+    } catch (error) {}
   };
   return (
     <div className="bg-gray-800 text-white flex items-center justify-between px-6 py-3 shadow-md">
@@ -29,7 +38,7 @@ const Navbar = () => {
       {/* Center: Navbar Links */}
       <div className="flex items-center justify-between w-1/3">
         <Link
-          to="/home"
+          to="/"
           className="flex items-center gap-2 p-2 rounded hover:bg-gray-700"
         >
           <FaHome />

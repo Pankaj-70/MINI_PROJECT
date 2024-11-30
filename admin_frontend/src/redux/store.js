@@ -4,7 +4,7 @@ import authenticateSlice from "./auth-slice";
 const store = configureStore({
   reducer: {
     adminOrder: adminOrderSlice,
-    autheticate: authenticateSlice,
+    authenticate: authenticateSlice,
   },
 });
 

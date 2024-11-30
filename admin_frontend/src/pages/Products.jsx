@@ -11,12 +11,12 @@ const Products = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useSelector(
-    (state) => state.autheticate.isAuthenticated
+    (state) => state.authenticate.isAuthenticated
   );
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/");
+      navigate("/login");
     }
   }, [isAuthenticated, navigate]);
 
