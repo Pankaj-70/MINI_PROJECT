@@ -31,12 +31,20 @@ const cartSlice = createSlice({
       );
     },
     updateQuantitySuccess: (state, action) => {
-      const { itemId, quantity } = action.payload;
-      const existingItem = state.cartItems.find((item) => item.id === itemId);
+      const { productId, quantity } = action.payload;
+      console.log(productId, quantity);
+
+      // Find the existing item in the cartItems array
+      const existingItem = state.cartItems.find(
+        (item) => item.productId._id === productId
+      );
+
       if (existingItem) {
+        // Update the quantity of the found item
         existingItem.quantity = quantity;
       }
     },
+
     setLoading: (state) => {
       state.loading = true;
     },
@@ -101,6 +109,8 @@ export const removeFromCart = (itemId, userId) => async (dispatch) => {
 
 export const updateItemQuantity =
   (productId, quantity, userId) => async (dispatch) => {
+    console.log(productId, quantity, userId,"updateItemQuantity");
+    
     try {
       const response = await axios.patch("/api/v1/cart/update", {
         productId,
@@ -108,7 +118,9 @@ export const updateItemQuantity =
         userId,
       });
       console.log(response);
-      dispatch(updateQuantitySuccess({ itemId, quantity: response.data.ret }));
+      dispatch(
+        updateQuantitySuccess({ productId, quantity: response.data.ret })
+      );
     } catch (error) {
       dispatch(setError(error.message));
     }
