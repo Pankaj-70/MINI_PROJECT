@@ -76,7 +76,7 @@ export const getCart = (userId) => async (dispatch) => {
       withCredentials: true,
     });
     dispatch(setCartItems(response.data.items));
-    console.log(state.cartItems, "dh");
+    // console.log(state.cartItems, "dh");
   } catch (error) {}
 };
 
@@ -87,7 +87,28 @@ export const addToCart = (item, quantity, userId) => async (dispatch) => {
       { item, quantity, userId },
       { withCredentials: true }
     );
-    const updatedItem = { ...item, id: response.data.cart._id };
+
+    const payload = {
+      productId: {
+        _id: item.id,
+        name: item.name,
+        price: item.price,
+        img: item.img,
+        stock: item.stock,
+        description: item.description,
+        category: item.category,
+        calorie: item.calorie,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        __v: item.__v,
+      },
+      quantity,
+      totalPrice: item.price * quantity,
+      _id: response.data.cart._id,
+    };
+
+    const updatedItem = { ...payload, id: response.data.cart._id };
+
     dispatch(addToCartSuccess({ item: updatedItem, quantity }));
   } catch (error) {
     // dispatch(setError(response.data.message));
