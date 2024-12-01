@@ -4,7 +4,8 @@ import axios from "axios";
 const initialState = {
   cartItems: [],
   loading: false,
-  error: null,
+  error: "",
+  totalPrice: 0,
 };
 
 const cartSlice = createSlice({
@@ -16,8 +17,8 @@ const cartSlice = createSlice({
     },
     addToCartSuccess: (state, action) => {
       const { item, quantity } = action.payload;
-      const existingItem = state.cart.find(
-        (cartItem) => cartItem.id === item.id
+      const existingItem = state.cartItems.find(
+        (food) => food.productId._id === item._id
       );
       if (existingItem) {
         existingItem.quantity += quantity;
@@ -27,20 +28,16 @@ const cartSlice = createSlice({
     },
     removeFromCartSuccess: (state, action) => {
       state.cartItems = state.cartItems.filter(
-        (item) => item.id !== action.payload
+        (item) => item.productId._id !== action.payload
       );
     },
     updateQuantitySuccess: (state, action) => {
       const { productId, quantity } = action.payload;
-      console.log(productId, quantity);
-
-      // Find the existing item in the cartItems array
       const existingItem = state.cartItems.find(
         (item) => item.productId._id === productId
       );
 
       if (existingItem) {
-        // Update the quantity of the found item
         existingItem.quantity = quantity;
       }
     },
@@ -88,20 +85,19 @@ export const addToCart = (item, quantity, userId) => async (dispatch) => {
       { item, quantity, userId },
       { withCredentials: true }
     );
-
     const updatedItem = { ...item, id: response.data.cart._id };
     dispatch(addToCartSuccess({ item: updatedItem, quantity }));
   } catch (error) {
-    dispatch(setError(error.message));
+    dispatch(setError(response.data.message));
   }
 };
 
-export const removeFromCart = (itemId, userId) => async (dispatch) => {
+export const removeFromCart = (productId, userId) => async (dispatch) => {
   try {
-    await axios.delete(`/api/v1/cart/remove`, {
-      data: { itemId, userId },
+    const response = await axios.delete(`/api/v1/cart/remove`, {
+      data: { productId, userId },
     });
-    dispatch(removeFromCartSuccess(itemId));
+    dispatch(removeFromCartSuccess(productId));
   } catch (error) {
     dispatch(setError(error.message));
   }
@@ -109,19 +105,16 @@ export const removeFromCart = (itemId, userId) => async (dispatch) => {
 
 export const updateItemQuantity =
   (productId, quantity, userId) => async (dispatch) => {
-    console.log(productId, quantity, userId,"updateItemQuantity");
-    
     try {
       const response = await axios.patch("/api/v1/cart/update", {
         productId,
         quantity,
         userId,
       });
-      console.log(response);
       dispatch(
         updateQuantitySuccess({ productId, quantity: response.data.ret })
       );
     } catch (error) {
-      dispatch(setError(error.message));
+      dispatch(setError(error.response.data.message));
     }
   };

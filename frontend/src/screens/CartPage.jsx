@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { createSelector } from "reselect";
 import CheckoutForm from "./CheckOutForm";
+import { toast } from "react-toastify";
 import {
   FaMinus,
   FaPlus,
@@ -12,6 +13,7 @@ import {
 import {
   addToCart,
   removeFromCart,
+  setError,
   updateItemQuantity,
 } from "../redux/slices/cartSlice";
 
@@ -21,6 +23,8 @@ const selectCartItems = createSelector(
 );
 
 const CartPage = () => {
+  const err = useSelector((state) => state.cart.error);
+  const totalPrice = useSelector((state) => state.cart.totalPrice);
   const cartItems = useSelector(selectCartItems);
   const dispatch = useDispatch();
   const [showPopup, setShowPopup] = useState(false);
@@ -36,6 +40,13 @@ const CartPage = () => {
   const incrementQuantity = (item) => {
     const productId = item.productId._id;
     dispatch(updateItemQuantity(productId, 1, userId));
+    if (err != "") {
+      toast.error(err, {
+        autoClose: 500,
+        position: "top-center",
+      });
+      dispatch(setError(""));
+    }
   };
   const decrementQuantity = (item) => {
     const productId = item.productId._id;
@@ -43,9 +54,11 @@ const CartPage = () => {
       dispatch(updateItemQuantity(productId, -1, userId));
     }
   };
-  const handleDeleteItem = (item) => dispatch(removeFromCart(item, userId));
-  const calculateTotal = () =>
-    cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const handleDeleteItem = (item) => {
+    const itemId = item.productId._id;
+    dispatch(removeFromCart(itemId, userId));
+  };
+  const calculateTotal = () => {};
 
   return (
     <div className="relative flex flex-col md:flex-row p-6 pt-24 text-gray-800 bg-gradient-to-b from-gray-100 to-gray-300 min-h-screen gap-6">

@@ -71,11 +71,11 @@ const CheckoutForm = ({ totalAmount, onSubmit }) => {
           <div className="text-gray-700 space-y-1">
             <div className="flex justify-between">
               <p>Subtotal:</p>
-              <p>₹{totalAmount.toFixed(2)}</p>
+              <p>₹{totalAmount}</p>
             </div>
             <div className="flex justify-between">
               <p>Tax (18%):</p>
-              <p>₹{taxAmount.toFixed(2)}</p>
+              <p>₹{taxAmount}</p>
             </div>
             <div className="flex justify-between">
               <p>Shipping Fee:</p>
@@ -88,7 +88,7 @@ const CheckoutForm = ({ totalAmount, onSubmit }) => {
             <hr className="my-2 border-gray-300" />
             <div className="flex justify-between font-bold text-lg text-gray-900">
               <p>Grand Total:</p>
-              <p>₹{grandTotal.toFixed(2)}</p>
+              <p>₹{grandTotal}</p>
             </div>
           </div>
         </div>

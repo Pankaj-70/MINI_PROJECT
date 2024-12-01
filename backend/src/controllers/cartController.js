@@ -1,12 +1,12 @@
 import { Cart } from "../models/cartSchema.js";
 import { Product } from "../models/productSchema.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/apiError.js";
 
 const addItemToCart = asyncHandler(async (req, res) => {
   const { userId, quantity, item: prod } = req.body;
   let productId = prod._id;
   let product = await Product.findById(productId);
-  console.log("Enter");
   if (quantity > product.stock) {
     return res
       .status(400)
@@ -65,38 +65,43 @@ const updateItemQuantity = asyncHandler(async (req, res) => {
     res.status(404).json({ message: "Cart not found" });
     return;
   }
-
   const product = await Product.findById(productId);
   if (!product) {
     res.status(404).json({ message: "Product not found" });
     return;
   }
 
-  if (quantity > product.stock) {
-    res.status(400).json({ message: "Not enough stock available" });
-    return;
-  }
-
-  const productPrice = product.price;
   const itemIndex = cart.items.findIndex(
     (item) => item.productId.toString() === productId
   );
+  let curr = cart.items[itemIndex].quantity;
+  if (curr + quantity > product.stock) {
+    return res.status(400).json({
+      message: "Not Enough Stock Available",
+    });
+  }
+  if (curr == 1 && quantity === -1) {
+    return res.status(400).json({
+      message: "Less than zero",
+    });
+  }
+
+  const productPrice = product.price;
 
   if (itemIndex > -1) {
-    cart.items[itemIndex].quantity = quantity + cart.items[itemIndex].quantity;
-    cart.items[itemIndex].totalPrice = quantity * productPrice;
+    curr = quantity + curr;
+    cart.items[itemIndex].totalPrice = curr * productPrice;
+    cart.items[itemIndex].quantity = curr;
   } else {
-    res.status(404).json({ message: "Item not found in cart" });
-    return;
+    return res.status(404).json({ message: "Item not found in cart" });
   }
-  const ret = cart.items[itemIndex].quantity;
+  const ret = curr;
   await cart.save();
-  res.status(200).json({ ret });
+  return res.status(200).json({ ret });
 });
 
 const removeItemFromCart = asyncHandler(async (req, res) => {
   const { userId, productId } = req.body;
-
   const cart = await Cart.findOne({ userId });
   if (!cart) {
     res.status(404).json({ message: "Cart not found" });
