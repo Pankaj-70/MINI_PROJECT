@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { Order } from "../models/orderSchema.js";
 import { Cart } from "../models/cartSchema.js";
-
+import { User } from "../models/userSchema.js";
 const getOrders = asyncHandler(async (req, res) => {
   const userId = req.params.id;
   const rets = await Order.findOne({ userId }).populate(
@@ -38,7 +38,7 @@ const addOrder = asyncHandler(async (req, res) => {
   let order = await Order.findOne({ userId });
   totalAmount = (totalAmount + totalAmount * 0.18 + 50 + 20).toFixed(2);
   if (order) {
-    order.orders.unshift({
+    order.orders.push({
       items,
       totalAmount,
       status: "Pending",
@@ -65,6 +65,28 @@ const addOrder = asyncHandler(async (req, res) => {
   });
 });
 
-const deleteOrder = asyncHandler(async (req, res) => {});
+const updateOrderStatus = asyncHandler(async (req, res) => {
+  const orderId = req.params.id;
+  const { itemId, newStatus } = req.body;
+  const order = await Order.findById(orderId);
+  for (const el of order.orders) {
+    if (el._id.toString() === itemId) {
+      el.status = newStatus;
+    }
+  }
+  await order.save();
 
-export { getOrders, addOrder };
+  return res.status(200).json({ message: "good", order });
+});
+
+const getAllOrders = asyncHandler(async (req, res) => {
+  const listOfAllOrders = await Order.find({}).populate(
+    "orders.items.productId"
+  );
+  return res.status(200).json({
+    message: "All products fetched successfully",
+    data: listOfAllOrders,
+  });
+});
+
+export { getOrders, addOrder, getAllOrders, updateOrderStatus };

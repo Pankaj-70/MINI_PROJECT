@@ -2,6 +2,7 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 import { AdminUser } from "../../models/admin/adminSchema.js";
 import { ApiError } from "../../utils/apiError.js";
 import { ApiResponse } from "../../utils/apiResponse.js";
+import { User } from "../../models/userSchema.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { email, fullName, password } = req.body;
@@ -120,9 +121,12 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const getLoginUser = asyncHandler(async (req, res) => {
-  return res
-    .status(200)
-    .json(new ApiResponse(200, req.user, "current user fetched successfully"));
+  const totalUsers = User.length;
+  return res.status(200).json({
+    user: req.user,
+    message: "current user fetched successfully",
+    totalUsers: totalUsers,
+  });
 });
 
 export { registerUser, loginUser, logoutUser, getLoginUser };

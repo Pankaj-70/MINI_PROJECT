@@ -13,15 +13,15 @@ const AddProduct = () => {
     (state) => state.authenticate.isAuthenticated
   );
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-    }
-  }, [isAuthenticated, navigate]);
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     navigate("/login");
+  //   }
+  // }, [isAuthenticated, navigate]);
 
-  if (!isAuthenticated) {
-    return <Loading />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Loading />;
+  // }
 
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");

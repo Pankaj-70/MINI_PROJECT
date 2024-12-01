@@ -10,16 +10,8 @@ const Home = () => {
   const isAuthenticated = useSelector(
     (state) => state.authenticate.isAuthenticated
   );
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-    }
-  }, [isAuthenticated, navigate]);
-
-  if (!isAuthenticated) {
-    return <Loading></Loading>;
-  }
+  const totalOrders = useSelector((state) => state.adminOrder.totalOrders);
+  const totalUsers = useSelector((state) => state.adminOrder.totalUsers);
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -39,12 +31,12 @@ const Home = () => {
             <p className="text-4xl font-bold mt-2">{items}</p>
           </div>
           <div className="bg-green-600 text-white p-6 rounded-lg shadow-lg hover:bg-green-700 transition duration-300">
-            <h2 className="text-2xl font-semibold">Orders Today</h2>
-            <p className="text-4xl font-bold mt-2">43</p>
+            <h2 className="text-2xl font-semibold">Orders Pending</h2>
+            <p className="text-4xl font-bold mt-2">{totalOrders}</p>
           </div>
           <div className="bg-yellow-600 text-white p-6 rounded-lg shadow-lg hover:bg-yellow-700 transition duration-300">
             <h2 className="text-2xl font-semibold">Active Users</h2>
-            <p className="text-4xl font-bold mt-2">120</p>
+            <p className="text-4xl font-bold mt-2">{totalUsers}</p>
           </div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-lg">

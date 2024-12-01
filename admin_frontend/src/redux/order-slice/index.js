@@ -4,6 +4,8 @@ import axios from "axios";
 const adminInitialState = {
   isLoading: false,
   productList: [],
+  totalOrders: 0,
+  totalUsers: 0,
 };
 
 export const addNewProduct = createAsyncThunk(
@@ -35,7 +37,14 @@ export const deleteProduct = createAsyncThunk(
 const AdminProductsSlice = createSlice({
   name: "adminProducts",
   initialState: adminInitialState,
-  reducers: [],
+  reducers: {
+    setTotalOrders: (state, action) => {
+      state.totalOrders = action.payload;
+    },
+    setTotalUsers: (state, action) => {
+      state.totalUsers = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllProducts.pending, (state) => {
@@ -64,4 +73,5 @@ const AdminProductsSlice = createSlice({
   },
 });
 
+export const { setTotalOrders, setTotalUsers } = AdminProductsSlice.actions;
 export default AdminProductsSlice.reducer;
