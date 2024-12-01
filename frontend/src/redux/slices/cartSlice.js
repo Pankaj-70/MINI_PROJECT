@@ -51,6 +51,9 @@ const cartSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    setTotalPrice: (state, action) => {
+      totalPrice += action.payload;
+    },
   },
 });
 
@@ -73,9 +76,8 @@ export const getCart = (userId) => async (dispatch) => {
       withCredentials: true,
     });
     dispatch(setCartItems(response.data.items));
-  } catch (error) {
-    dispatch(setError(error.message));
-  }
+    console.log(state.cartItems, "dh");
+  } catch (error) {}
 };
 
 export const addToCart = (item, quantity, userId) => async (dispatch) => {
@@ -88,7 +90,7 @@ export const addToCart = (item, quantity, userId) => async (dispatch) => {
     const updatedItem = { ...item, id: response.data.cart._id };
     dispatch(addToCartSuccess({ item: updatedItem, quantity }));
   } catch (error) {
-    dispatch(setError(response.data.message));
+    // dispatch(setError(response.data.message));
   }
 };
 

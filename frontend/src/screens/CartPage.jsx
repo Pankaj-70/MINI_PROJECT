@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { createSelector } from "reselect";
-import CheckoutForm from "./CheckOutForm";
+import CheckoutForm from "./CheckoutForm";
 import { toast } from "react-toastify";
 import {
   FaMinus,
@@ -12,26 +12,23 @@ import {
 } from "react-icons/fa";
 import {
   addToCart,
+  getCart,
   removeFromCart,
   setError,
   updateItemQuantity,
 } from "../redux/slices/cartSlice";
 
-const selectCartItems = createSelector(
-  (state) => state.cart.cartItems,
-  (cartItems) => cartItems || []
-);
-
 const CartPage = () => {
-  const err = useSelector((state) => state.cart.error);
-  const totalPrice = useSelector((state) => state.cart.totalPrice);
-  const cartItems = useSelector(selectCartItems);
   const dispatch = useDispatch();
-  const [showPopup, setShowPopup] = useState(false);
   const userId = useSelector((state) => state.user.userId);
+  const err = useSelector((state) => state.cart.error);
+  const cartItems = useSelector((state) => state.cart.cartItems);
+  const [showPopup, setShowPopup] = useState(false);
+
   const handleOrderButton = () => {
-    cartItems.forEach((item) => {
-      dispatch(removeFromCart(item));
+    console.log(cartItems, "dhet");
+    cartItems.map((item, index) => {
+      dispatch(removeFromCart(item.productId._id, userId));
     });
     setShowPopup(true);
     setTimeout(() => setShowPopup(false), 3000);
@@ -40,25 +37,33 @@ const CartPage = () => {
   const incrementQuantity = (item) => {
     const productId = item.productId._id;
     dispatch(updateItemQuantity(productId, 1, userId));
-    if (err != "") {
+    if (err) {
       toast.error(err, {
         autoClose: 500,
         position: "top-center",
       });
-      dispatch(setError(""));
+      setTimeout(() => dispatch(setError("")), 500);
     }
   };
+
   const decrementQuantity = (item) => {
     const productId = item.productId._id;
     if (item.quantity > 1) {
       dispatch(updateItemQuantity(productId, -1, userId));
     }
   };
+
   const handleDeleteItem = (item) => {
     const itemId = item.productId._id;
     dispatch(removeFromCart(itemId, userId));
   };
-  const calculateTotal = () => {};
+
+  const calculateTotal = () => {
+    return cartItems.reduce(
+      (acc, item) => acc + item.productId.price * item.quantity,
+      0
+    );
+  };
 
   return (
     <div className="relative flex flex-col md:flex-row p-6 pt-24 text-gray-800 bg-gradient-to-b from-gray-100 to-gray-300 min-h-screen gap-6">
@@ -88,54 +93,56 @@ const CartPage = () => {
           </div>
         ) : (
           <div className="space-y-4 p-4">
-            {cartItems.map((item, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between bg-gray-100 p-4 rounded-md shadow-md hover:shadow-lg transition-transform duration-300"
-              >
-                <img
-                  src={item.productId.img}
-                  alt={item.productId.name}
-                  className="w-20 h-20 object-cover rounded-md mr-4"
-                />
-                <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-gray-800">
-                    {item.productId.name}
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    Price: ₹{item.productId.price}
-                  </p>
-                  <div className="flex items-center mt-2 space-x-3">
+            {cartItems.map((item, index) => {
+              return (
+                <div
+                  key={index}
+                  className="flex items-center justify-between bg-gray-100 p-4 rounded-md shadow-md hover:shadow-lg transition-transform duration-300"
+                >
+                  <img
+                    src={item.productId.img}
+                    alt={item.productId.name || "Product"}
+                    className="w-20 h-20 object-cover rounded-md mr-4"
+                  />
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold text-gray-800">
+                      {item.productId.name || "Unknown Product"}
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      Price: ₹{item.productId.price || 0}
+                    </p>
+                    <div className="flex items-center mt-2 space-x-3">
+                      <button
+                        onClick={() => decrementQuantity(item)}
+                        className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition"
+                      >
+                        <FaMinus className="text-gray-700" />
+                      </button>
+                      <span className="text-md font-medium text-gray-900">
+                        {item.quantity || 0}
+                      </span>
+                      <button
+                        onClick={() => incrementQuantity(item)}
+                        className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition"
+                      >
+                        <FaPlus className="text-gray-700" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <p className="text-lg font-semibold text-gray-800">
+                      ₹{(item.productId.price || 0) * (item.quantity || 0)}
+                    </p>
                     <button
-                      onClick={() => decrementQuantity(item)}
-                      className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition"
+                      onClick={() => handleDeleteItem(item)}
+                      className="text-red-500 hover:text-red-700 transition"
                     >
-                      <FaMinus className="text-gray-700" />
-                    </button>
-                    <span className="text-md font-medium text-gray-900">
-                      {item.quantity}
-                    </span>
-                    <button
-                      onClick={() => incrementQuantity(item)}
-                      className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition"
-                    >
-                      <FaPlus className="text-gray-700" />
+                      <FaTrash />
                     </button>
                   </div>
                 </div>
-                <div className="flex items-center space-x-4">
-                  <p className="text-lg font-semibold text-gray-800">
-                    ₹{item.productId.price * item.quantity}
-                  </p>
-                  <button
-                    onClick={() => handleDeleteItem(item)}
-                    className="text-red-500 hover:text-red-700 transition"
-                  >
-                    <FaTrash />
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

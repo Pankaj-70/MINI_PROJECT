@@ -1,12 +1,11 @@
 import { Cart } from "../models/cartSchema.js";
 import { Product } from "../models/productSchema.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiError } from "../utils/apiError.js";
 
 const addItemToCart = asyncHandler(async (req, res) => {
   const { userId, quantity, item: prod } = req.body;
   let productId = prod._id;
-  let product = await Product.findById(productId);
+  const product = await Product.findById(productId);
   if (quantity > product.stock) {
     return res
       .status(400)
@@ -102,24 +101,35 @@ const updateItemQuantity = asyncHandler(async (req, res) => {
 
 const removeItemFromCart = asyncHandler(async (req, res) => {
   const { userId, productId } = req.body;
+
   const cart = await Cart.findOne({ userId });
   if (!cart) {
-    res.status(404).json({ message: "Cart not found" });
-    return;
+    return res.status(404).json({ message: "Cart not found" });
   }
+
+  // Check if the item exists in the cart
   const itemIndex = cart.items.findIndex(
     (item) => item.productId.toString() === productId
   );
 
   if (itemIndex > -1) {
-    cart.items.splice(itemIndex, 1);
-  } else {
-    res.status(404).json({ message: "Item not found in cart" });
-    return;
+    // Remove the item using $pull for atomic updates
+    await Cart.updateOne({ userId }, { $pull: { items: { productId } } });
+
+    // If the cart is empty after removal, consider deleting it
+    const updatedCart = await Cart.findOne({ userId });
+    if (updatedCart.items.length === 0) {
+      await Cart.deleteOne({ userId });
+      return res.status(200).json({ message: "Cart is now empty", items: [] });
+    }
+
+    // Return the updated cart
+    return res
+      .status(200)
+      .json({ message: "Item removed successfully", cart: updatedCart });
   }
 
-  await cart.save();
-  res.status(200).json(cart);
+  res.status(404).json({ message: "Item not found in cart" });
 });
 
 const getItems = asyncHandler(async (req, res) => {});

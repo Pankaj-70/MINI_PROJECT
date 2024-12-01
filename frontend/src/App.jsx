@@ -16,10 +16,8 @@ import Settings from "./screens/Settings";
 import PaymentMethods from "./screens/PaymentMethods";
 import Notifications from "./screens/Notifications";
 import Support from "./screens/Support";
-import CheckoutForm from "./screens/CheckOutForm";
 import CartPage from "./screens/CartPage";
 import { useEffect } from "react";
-import { fetchAllProducts } from "./redux/slices/productSlice";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { login, logout } from "./redux/slices/userSlice";
@@ -73,7 +71,6 @@ function App() {
               <Route path="/payment-methods" element={<PaymentMethods />} />
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/support" element={<Support />} />
-              <Route path="/checkout" element={<CheckoutForm />} />
               <Route path="/cart" element={<CartPage />} />
             </Routes>
           </main>

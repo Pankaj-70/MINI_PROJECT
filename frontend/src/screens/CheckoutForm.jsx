@@ -8,9 +8,9 @@ const CheckoutForm = ({ totalAmount, onSubmit }) => {
   });
 
   // Define additional charges
-  const taxRate = 0.18; // 18% tax
-  const shippingFee = 50; // Shipping fee in INR
-  const handlingFee = 20; // Handling fee in INR
+  const taxRate = totalAmount == 0 ? 0 : 0.18; // 18% tax
+  const shippingFee = totalAmount == 0 ? 0 : 50; // Shipping fee in INR
+  const handlingFee = totalAmount == 0 ? 0 : 20; // Handling fee in INR
 
   // Calculate additional charges and grand total
   const taxAmount = totalAmount * taxRate;
@@ -40,7 +40,6 @@ const CheckoutForm = ({ totalAmount, onSubmit }) => {
             onChange={(e) =>
               setUserDetails({ ...userDetails, address: e.target.value })
             }
-            required
           />
         </div>
 
@@ -54,7 +53,6 @@ const CheckoutForm = ({ totalAmount, onSubmit }) => {
             onChange={(e) =>
               setUserDetails({ ...userDetails, paymentMethod: e.target.value })
             }
-            required
           >
             <option value="">Select Payment Method</option>
             <option value="credit-card">Credit Card</option>
@@ -75,7 +73,7 @@ const CheckoutForm = ({ totalAmount, onSubmit }) => {
             </div>
             <div className="flex justify-between">
               <p>Tax (18%):</p>
-              <p>₹{taxAmount}</p>
+              <p>₹{taxAmount.toFixed(2)}</p>
             </div>
             <div className="flex justify-between">
               <p>Shipping Fee:</p>
@@ -88,7 +86,7 @@ const CheckoutForm = ({ totalAmount, onSubmit }) => {
             <hr className="my-2 border-gray-300" />
             <div className="flex justify-between font-bold text-lg text-gray-900">
               <p>Grand Total:</p>
-              <p>₹{grandTotal}</p>
+              <p>₹{grandTotal.toFixed(2)}</p>
             </div>
           </div>
         </div>

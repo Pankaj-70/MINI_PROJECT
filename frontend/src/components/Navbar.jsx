@@ -65,17 +65,14 @@ const Navbar = () => {
       <div className="flex items-center space-x-4">
         {/* Cart Icon */}
         {isLoggedIn && (
-          <div
-            className="relative cursor-pointer"
-            onClick={() => navigate("/cart")}
-          >
+          <Link to="/cart" className="relative cursor-pointer">
             <FaShoppingCart className="text-white text-2xl" />
             {totalCartItems > 0 && (
               <span className="absolute top-[-8px] right-[-10px] bg-red-500 text-white text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center">
                 {totalCartItems}
               </span>
             )}
-          </div>
+          </Link>
         )}
 
         {isLoggedIn ? (
