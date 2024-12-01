@@ -76,7 +76,6 @@ export const getCart = (userId) => async (dispatch) => {
       withCredentials: true,
     });
     dispatch(setCartItems(response.data.items));
-    // console.log(state.cartItems, "dh");
   } catch (error) {}
 };
 
@@ -110,9 +109,7 @@ export const addToCart = (item, quantity, userId) => async (dispatch) => {
     const updatedItem = { ...payload, id: response.data.cart._id };
 
     dispatch(addToCartSuccess({ item: updatedItem, quantity }));
-  } catch (error) {
-    // dispatch(setError(response.data.message));
-  }
+  } catch (error) {}
 };
 
 export const removeFromCart = (productId, userId) => async (dispatch) => {

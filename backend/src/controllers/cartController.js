@@ -132,6 +132,4 @@ const removeItemFromCart = asyncHandler(async (req, res) => {
   res.status(404).json({ message: "Item not found in cart" });
 });
 
-const getItems = asyncHandler(async (req, res) => {});
-
 export { addItemToCart, getCart, updateItemQuantity, removeItemFromCart };

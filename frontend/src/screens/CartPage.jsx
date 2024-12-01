@@ -14,9 +14,13 @@ import {
   addToCart,
   getCart,
   removeFromCart,
+  removeFromCartSuccess,
+  setCartItems,
   setError,
   updateItemQuantity,
 } from "../redux/slices/cartSlice";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -24,14 +28,25 @@ const CartPage = () => {
   const err = useSelector((state) => state.cart.error);
   const cartItems = useSelector((state) => state.cart.cartItems);
   const [showPopup, setShowPopup] = useState(false);
+  const navigate = useNavigate();
 
   const handleOrderButton = () => {
-    console.log(cartItems, "dhet");
-    cartItems.map((item, index) => {
-      dispatch(removeFromCart(item.productId._id, userId));
-    });
+    const sendOrder = async () => {
+      try {
+        const response = await axios.post(
+          "/api/v1/order/createOrder",
+          { userId },
+          { withCredentials: true }
+        );
+        console.log(response, "cartpage");
+      } catch (error) {}
+    };
+    sendOrder();
+    dispatch(setCartItems([]));
     setShowPopup(true);
-    setTimeout(() => setShowPopup(false), 3000);
+    setTimeout(() => setShowPopup(false), 2000);
+    navigate("/orders");
+    // window.location.reload();
   };
 
   const incrementQuantity = (item) => {
