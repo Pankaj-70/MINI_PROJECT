@@ -46,7 +46,7 @@ const CartPage = () => {
     setShowPopup(true);
     setTimeout(() => setShowPopup(false), 2000);
     navigate("/orders");
-    // window.location.reload();
+    window.location.reload();
   };
 
   const incrementQuantity = (item) => {

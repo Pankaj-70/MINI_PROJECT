@@ -25,9 +25,12 @@ const PopUp = ({ item, onClose }) => {
   };
 
   const handleBuyNow = () => {
-    dispatch(addToCart(item, quantity, userId));
-    navigate("/cart");
-    onClose();
+    if (!isLoggedIn) {
+      navigate("/login");
+    } else {
+      dispatch(addToCart(item, quantity, userId));
+      onClose();
+    }
   };
 
   return (
@@ -68,7 +71,7 @@ const PopUp = ({ item, onClose }) => {
             </button>
           </div>
           <span className="text-xl font-semibold text-green-600">
-            ₹{item.price * quantity}
+            $ {item.price * quantity}
           </span>
         </div>
         <button

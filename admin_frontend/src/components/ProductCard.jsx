@@ -14,7 +14,7 @@ const ProductCard = ({ product, handleDelete }) => {
       <p className="text-gray-600 mb-2">{product.description}</p>
       <div className="flex justify-between">
         <p className="text-green-600 font-semibold mb-1">
-          Price: ${product.price}
+          Price: Rs {product.price}
         </p>
         <p className="text-blue-600 font-medium mb-4">
           Calories: {product.calorie} kcal

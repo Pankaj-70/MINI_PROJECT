@@ -64,6 +64,7 @@ const App = () => {
 
       dispatch(fetchAllProducts());
     };
+    dispatch(toggleAuth(true));
     fetchUser();
   }, []);
   return (

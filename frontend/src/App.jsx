@@ -74,8 +74,8 @@ function App() {
               <Route path="/cart" element={<CartPage />} />
             </Routes>
           </main>
+          <Footer />
         </Router>
-        <Footer />
         <ToastContainer />
       </div>
     </>

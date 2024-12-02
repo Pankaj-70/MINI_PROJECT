@@ -1,102 +1,139 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { toast } from "react-toastify";
 
 const CheckoutForm = ({ totalAmount, onSubmit }) => {
   const [userDetails, setUserDetails] = useState({
-    name: "",
     address: "",
-    paymentMethod: "",
   });
 
-  // Define additional charges
-  const taxRate = totalAmount == 0 ? 0 : 0.18; // 18% tax
-  const shippingFee = totalAmount == 0 ? 0 : 50; // Shipping fee in INR
-  const handlingFee = totalAmount == 0 ? 0 : 20; // Handling fee in INR
-
-  // Calculate additional charges and grand total
+  const taxRate = totalAmount > 0 ? 0.18 : 0;
+  const shippingFee = totalAmount > 0 ? 50 : 0;
+  const handlingFee = totalAmount > 0 ? 20 : 0;
   const taxAmount = totalAmount * taxRate;
-  const grandTotal = totalAmount + taxAmount + shippingFee + handlingFee;
-
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(userDetails); // Pass userDetails to parent component
+  const grandTotal = 1;
+  const [place, setPlace] = useState(false);
+  const handleSubmit = async (details) => {
+    try {
+      const response = await axios.post("/api/paypal/create-payment", {
+        amount: grandTotal,
+        paymentDetails: details,
+      });
+      console.log(response.data);
+      toast.success("Payment successful!", {
+        autoClose: 900,
+        position: "top-left",
+      });
+      setPlace(true);
+    } catch (error) {
+      console.error("Payment error:", error);
+      alert("An error occurred during payment. Please try again.");
+    }
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-lg space-y-6">
-      <h3 className="text-3xl font-bold text-gray-900 mb-6 text-center">
+    <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
+      <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">
         Checkout
-      </h3>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      </h2>
+      <form className="space-y-6">
         <div>
-          <label className="block text-lg font-medium text-gray-700">
+          <label className="block text-gray-700 font-medium mb-2">
             Shipping Address
           </label>
           <input
             type="text"
-            className="w-full p-3 border border-gray-300 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             placeholder="Enter your shipping address"
             value={userDetails.address}
             onChange={(e) =>
               setUserDetails({ ...userDetails, address: e.target.value })
             }
+            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
-
-        <div>
-          <label className="block text-lg font-medium text-gray-700">
-            Payment Method
-          </label>
-          <select
-            className="w-full p-3 border border-gray-300 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={userDetails.paymentMethod}
-            onChange={(e) =>
-              setUserDetails({ ...userDetails, paymentMethod: e.target.value })
-            }
-          >
-            <option value="">Select Payment Method</option>
-            <option value="credit-card">Credit Card</option>
-            <option value="debit-card">Debit Card</option>
-            <option value="paypal">PayPal</option>
-          </select>
-        </div>
-
-        {/* Order Summary Breakdown */}
-        <div className="bg-gray-50 p-4 rounded-lg shadow-inner border border-gray-200 space-y-2">
-          <h4 className="text-xl font-semibold text-gray-800 text-center">
+        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-inner">
+          <h3 className="font-semibold text-lg text-gray-800 mb-2">
             Order Summary
-          </h4>
-          <div className="text-gray-700 space-y-1">
-            <div className="flex justify-between">
-              <p>Subtotal:</p>
-              <p>₹{totalAmount}</p>
-            </div>
-            <div className="flex justify-between">
-              <p>Tax (18%):</p>
-              <p>₹{taxAmount.toFixed(2)}</p>
-            </div>
-            <div className="flex justify-between">
-              <p>Shipping Fee:</p>
-              <p>₹{shippingFee}</p>
-            </div>
-            <div className="flex justify-between">
-              <p>Handling Fee:</p>
-              <p>₹{handlingFee}</p>
-            </div>
-            <hr className="my-2 border-gray-300" />
-            <div className="flex justify-between font-bold text-lg text-gray-900">
-              <p>Grand Total:</p>
-              <p>₹{grandTotal.toFixed(2)}</p>
-            </div>
+          </h3>
+          <div className="flex justify-between text-gray-700">
+            <span>Subtotal:</span>
+            <span>₹{totalAmount.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between text-gray-700">
+            <span>Tax (18%):</span>
+            <span>₹{taxAmount.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between text-gray-700">
+            <span>Shipping Fee:</span>
+            <span>₹{shippingFee}</span>
+          </div>
+          <div className="flex justify-between text-gray-700">
+            <span>Handling Fee:</span>
+            <span>₹{handlingFee}</span>
+          </div>
+          <div className="flex justify-between font-bold text-gray-900 mt-3">
+            <span>Grand Total:</span>
+            <span>₹{grandTotal.toFixed(2)}</span>
           </div>
         </div>
-
-        <button
-          type="submit"
-          className="w-full bg-gradient-to-r from-green-400 to-green-600 text-white font-medium py-3 rounded-lg shadow-md hover:shadow-lg transition-transform duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-        >
-          Place Order
-        </button>
+        {grandTotal > 0 ? (
+          <>
+            <PayPalScriptProvider
+              options={{
+                clientId:
+                  "AengVu6dW4ZWFR9Cnwp0-TtG1ixkBWn8QKC8O0EFiQ3RIm-s6vbqtFzWloiN2VNYAgZe-hviaudmtxYX",
+              }}
+            >
+              <PayPalButtons
+                style={{
+                  layout: "vertical",
+                  shape: "rect",
+                  label: "pay",
+                }}
+                createOrder={(data, actions) => {
+                  return actions.order.create({
+                    purchase_units: [
+                      {
+                        amount: {
+                          currency_code: "USD",
+                          value: grandTotal.toFixed(2).toString(),
+                        },
+                      },
+                    ],
+                  });
+                }}
+                onApprove={(data, actions) => {
+                  return actions.order.capture().then((details) => {
+                    handleSubmit(details);
+                  });
+                }}
+                onError={(err) => {
+                  alert("Payment failed. Please try again.");
+                  console.error(err);
+                }}
+              />
+            </PayPalScriptProvider>
+            <button
+              disabled={!place}
+              className={`w-full py-2 text-white rounded-md text-center ${
+                place
+                  ? "bg-green-800 hover:bg-green-600"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
+              onClick={() => {
+                setPlace(false);
+                onSubmit();
+              }}
+            >
+              Place Order
+            </button>
+          </>
+        ) : (
+          <div className="text-red-500 text-center mt-4">
+            Total amount must be greater than zero to proceed with payment.
+          </div>
+        )}
       </form>
     </div>
   );

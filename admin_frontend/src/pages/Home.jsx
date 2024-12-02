@@ -12,7 +12,16 @@ const Home = () => {
   );
   const totalOrders = useSelector((state) => state.adminOrder.totalOrders);
   const totalUsers = useSelector((state) => state.adminOrder.totalUsers);
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login", { replace: true });
+      window.location.reload();
+    }
+  }, [isAuthenticated, navigate]);
 
+  if (!isAuthenticated) {
+    return <Loading />;
+  }
   return (
     <div className="bg-gray-100 min-h-screen">
       <Navbar />
