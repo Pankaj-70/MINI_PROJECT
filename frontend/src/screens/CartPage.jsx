@@ -30,12 +30,12 @@ const CartPage = () => {
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
-  const handleOrderButton = () => {
+  const handleOrderButton = ({ scheduleDate, scheduleTime }, e) => {
     const sendOrder = async () => {
       try {
         const response = await axios.post(
           "/api/v1/order/createOrder",
-          { userId },
+          { userId, scheduleDate, scheduleTime },
           { withCredentials: true }
         );
         console.log(response, "cartpage");

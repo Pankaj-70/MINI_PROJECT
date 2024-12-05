@@ -6,19 +6,26 @@ import { toast } from "react-toastify";
 const CheckoutForm = ({ totalAmount, onSubmit }) => {
   const [userDetails, setUserDetails] = useState({
     address: "",
+    scheduleDate: "",
+    scheduleTime: "",
   });
 
   const taxRate = totalAmount > 0 ? 0.18 : 0;
   const shippingFee = totalAmount > 0 ? 50 : 0;
   const handlingFee = totalAmount > 0 ? 20 : 0;
   const taxAmount = totalAmount * taxRate;
-  const grandTotal = 1;
+  const grandTotal = totalAmount + taxAmount + shippingFee + handlingFee;
   const [place, setPlace] = useState(false);
+
   const handleSubmit = async (details) => {
     try {
       const response = await axios.post("/api/paypal/create-payment", {
         amount: grandTotal,
         paymentDetails: details,
+        schedule: {
+          date: userDetails.scheduleDate,
+          time: userDetails.scheduleTime,
+        },
       });
       console.log(response.data);
       toast.success("Payment successful!", {
@@ -48,6 +55,32 @@ const CheckoutForm = ({ totalAmount, onSubmit }) => {
             value={userDetails.address}
             onChange={(e) =>
               setUserDetails({ ...userDetails, address: e.target.value })
+            }
+            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">
+            Schedule Date
+          </label>
+          <input
+            type="date"
+            value={userDetails.scheduleDate}
+            onChange={(e) =>
+              setUserDetails({ ...userDetails, scheduleDate: e.target.value })
+            }
+            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">
+            Schedule Time
+          </label>
+          <input
+            type="time"
+            value={userDetails.scheduleTime}
+            onChange={(e) =>
+              setUserDetails({ ...userDetails, scheduleTime: e.target.value })
             }
             className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
@@ -121,9 +154,15 @@ const CheckoutForm = ({ totalAmount, onSubmit }) => {
                   ? "bg-green-800 hover:bg-green-600"
                   : "bg-gray-400 cursor-not-allowed"
               }`}
-              onClick={() => {
+              onClick={(e) => {
                 setPlace(false);
-                onSubmit();
+                onSubmit(
+                  {
+                    scheduleDate: userDetails.scheduleDate,
+                    scheduleTime: userDetails.scheduleTime,
+                  },
+                  e
+                );
               }}
             >
               Place Order

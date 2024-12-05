@@ -2,8 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import { useSelector, useDispatch } from "react-redux";
-import { setTotalOrders } from "../redux/order-slice";
-
+import { FaTrash } from "react-icons/fa";
 const Orders = () => {
   const [groupedOrders, setGroupedOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
@@ -12,6 +11,7 @@ const Orders = () => {
   const [dateFilter, setDateFilter] = useState({ start: "", end: "" });
   const [priceFilter, setPriceFilter] = useState({ min: "", max: "" });
   const dispatch = useDispatch();
+  const [triggerEffect, setTriggerEffect] = useState(false);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -30,6 +30,8 @@ const Orders = () => {
             items: order.items,
             totalAmount: order.totalAmount,
             status: order.status,
+            scheduleDate: order.scheduleDate,
+            scheduleTime: order.scheduleTime,
           }))
         );
         const sortedOrders = allOrders.sort((a, b) => {
@@ -85,8 +87,25 @@ const Orders = () => {
 
   useEffect(() => {
     handleFilterChange();
-  }, [statusFilter, dateFilter, priceFilter]);
+    setTriggerEffect(false);
+  }, [statusFilter, dateFilter, priceFilter, triggerEffect]);
 
+  const handleDelete = async (orderId, itemId) => {
+    try {
+      const response = await axios.patch(
+        `/api/v1/order/deleteOrder/${orderId}`,
+        {
+          itemId: itemId,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleStatusChange = async (orderId, itemId, newStatus) => {
     try {
       const response = await axios.patch(
@@ -201,77 +220,105 @@ const Orders = () => {
                   <th className="border px-4 py-2 text-blue-800">Date</th>
                   <th className="border px-4 py-2 text-blue-800">User ID</th>
                   <th className="border px-4 py-2 text-blue-800">Order ID</th>
+                  <th className="border px-4 py-2 text-blue-800">
+                    Scheduled Date
+                  </th>
+                  <th className="border px-4 py-2 text-blue-800">
+                    Scheduled Time
+                  </th>
                   <th className="border px-4 py-2 text-blue-800">Items</th>
                   <th className="border px-4 py-2 text-blue-800">Total</th>
                   <th className="border px-4 py-2 text-blue-800">Status</th>
+                  <th className="border px-4 py-2 text-blue-800">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredOrders.map((order) => (
-                  <tr
-                    key={order.orderId}
-                    className="hover:bg-blue-50 transition-all even:bg-white odd:bg-gray-100"
-                  >
-                    <td className="text-center align-top border px-4 py-2 text-gray-700">
-                      {new Date(order.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="text-center align-top border px-4 py-2 text-gray-700">
-                      {order.userId || "N/A"}
-                    </td>
-                    <td className="text-center align-top border px-4 py-2 text-gray-700">
-                      #{order.orderId}
-                    </td>
-                    <td className="border px-4 py-2 text-gray-700">
-                      {order.items.map((item, index) => (
-                        <div key={index}>
-                          {item.productId?.name || "Product Name"} x{" "}
-                          {item.quantity}
-                        </div>
-                      ))}
-                    </td>
-                    <td className="text-center align-top border px-4 py-2 text-gray-700">
-                      ₹{order.totalAmount.toFixed(2)}
-                    </td>
-                    <td className="text-center align-top border px-4 py-2">
-                      <select
-                        className={`border px-2 py-1 rounded text-white cursor-pointer ${
-                          order.status === "Pending"
-                            ? "bg-yellow-600"
-                            : order.status === "Completed"
-                            ? "bg-green-800"
-                            : "bg-red-600"
-                        }`}
-                        value={order.status}
-                        onChange={(e) => {
-                          handleStatusChange(
-                            order.sendId,
-                            order.orderId,
-                            e.target.value
-                          );
-                        }}
-                      >
-                        <option
-                          value="Pending"
-                          className="bg-yellow-400 cursor-pointer text-black"
+                {filteredOrders.map((order) => {
+                  return (
+                    <tr
+                      key={order.orderId}
+                      className="hover:bg-blue-50 transition-all even:bg-white odd:bg-gray-100"
+                    >
+                      <td className="text-center align-top border px-4 py-2 text-gray-700">
+                        {new Date(order.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="text-center align-top border px-4 py-2 text-gray-700">
+                        {order.userId || "N/A"}
+                      </td>
+                      <td className="text-center align-top border px-4 py-2 text-gray-700">
+                        #{order.orderId}
+                      </td>
+                      <td className="text-center align-top border px-4 py-2 text-gray-700">
+                        {order.scheduleDate
+                          ? new Date(order.scheduleDate).toLocaleDateString()
+                          : "N/A"}
+                      </td>
+                      <td className="text-center align-top border px-4 py-2 text-gray-700">
+                        {order.scheduleTime || "Immediate"}
+                      </td>
+                      <td className="border px-4 py-2 text-gray-700">
+                        {order.items.map((item, index) => (
+                          <div key={index}>
+                            {item.productId?.name || "Product Name"} x{" "}
+                            {item.quantity}
+                          </div>
+                        ))}
+                      </td>
+                      <td className="text-center align-top border px-4 py-2 text-gray-700">
+                        ₹{order.totalAmount.toFixed(2)}
+                      </td>
+                      <td className="text-center align-top border px-4 py-2">
+                        <select
+                          className={`border px-2 py-1 rounded text-white cursor-pointer ${
+                            order.status === "Pending"
+                              ? "bg-yellow-600"
+                              : order.status === "Completed"
+                              ? "bg-green-800"
+                              : "bg-red-600"
+                          }`}
+                          value={order.status}
+                          onChange={(e) => {
+                            handleStatusChange(
+                              order.sendId,
+                              order.orderId,
+                              e.target.value
+                            );
+                          }}
                         >
-                          Pending
-                        </option>
-                        <option
-                          value="Completed"
-                          className="bg-green-400 cursor-pointer text-black"
+                          <option
+                            value="Pending"
+                            className="bg-yellow-400 cursor-pointer text-black"
+                          >
+                            Pending
+                          </option>
+                          <option
+                            value="Completed"
+                            className="bg-green-400 cursor-pointer text-black"
+                          >
+                            Completed
+                          </option>
+                          <option
+                            value="Cancelled"
+                            className="bg-red-400 cursor-pointer text-black"
+                          >
+                            Cancelled
+                          </option>
+                        </select>
+                      </td>
+                      <td className="text-center align-middle">
+                        <button
+                          className="text-red-700 text-[1.2rem]"
+                          onClick={() => {
+                            setTriggerEffect(true);
+                            handleDelete(order.sendId, order.orderId);
+                          }}
                         >
-                          Completed
-                        </option>
-                        <option
-                          value="Cancelled"
-                          className="bg-red-400 cursor-pointer text-black"
-                        >
-                          Cancelled
-                        </option>
-                      </select>
-                    </td>
-                  </tr>
-                ))}
+                          <FaTrash />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

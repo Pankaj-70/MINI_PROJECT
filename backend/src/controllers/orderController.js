@@ -12,9 +12,9 @@ const getOrders = asyncHandler(async (req, res) => {
 });
 
 const addOrder = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
+  const { userId, scheduleTime, scheduleDate } = req.body;
   const cart = await Cart.findOne({ userId });
-
+  console.log(scheduleTime.toString());
   if (!cart) {
     return res.status(404).json({ message: "Cart not found" });
   }
@@ -42,6 +42,10 @@ const addOrder = asyncHandler(async (req, res) => {
       items,
       totalAmount,
       status: "Pending",
+      scheduleTime: scheduleTime.toString()
+        ? scheduleTime.toString()
+        : "Immediate",
+      scheduleDate: scheduleDate || Date.now(),
     });
   } else {
     order = new Order({
@@ -51,11 +55,14 @@ const addOrder = asyncHandler(async (req, res) => {
           items,
           totalAmount,
           status: "Pending",
+          scheduleTime: scheduleTime.toString()
+            ? scheduleTime.toString()
+            : "Immediate",
+          scheduleDate: scheduleDate || Date.now(),
         },
       ],
     });
   }
-
   await order.save();
   await Cart.deleteOne({ userId });
 
@@ -89,4 +96,25 @@ const getAllOrders = asyncHandler(async (req, res) => {
   });
 });
 
-export { getOrders, addOrder, getAllOrders, updateOrderStatus };
+const deleteOrder = asyncHandler(async (req, res) => {
+  const orderId = req.params.id;
+  const { itemId } = req.body;
+  const order = await Order.findById(orderId);
+  if (!order) {
+    return res.status(404).json({ message: "Order not found" });
+  }
+
+  const itemIndex = order.orders.findIndex(
+    (el) => el._id.toString() === itemId
+  );
+  if (itemIndex === -1) {
+    return res.status(404).json({ message: "Item not found in order" });
+  }
+
+  order.orders.splice(itemIndex, 1);
+  await order.save();
+
+  return res.status(200).json({ message: "Item deleted successfully", order });
+});
+
+export { getOrders, addOrder, getAllOrders, updateOrderStatus, deleteOrder };

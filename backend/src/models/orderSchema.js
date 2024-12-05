@@ -35,6 +35,12 @@ const orderSchema = new mongoose.Schema(
           enum: ["Pending", "Completed", "Cancelled"],
           default: "Pending",
         },
+        scheduleTime: {
+          type: String,
+        },
+        scheduleDate: {
+          type: Date,
+        },
         createdAt: {
           type: Date,
           default: Date.now,
