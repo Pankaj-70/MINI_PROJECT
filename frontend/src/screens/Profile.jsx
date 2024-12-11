@@ -65,7 +65,7 @@ const Profile = () => {
           <p className="text-xl font-semibold">Notifications</p>
         </Link>
         <Link
-          to="/support"
+          to="/contact"
           className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center text-center hover:bg-gray-100 transition duration-200"
         >
           <FaLifeRing className="text-4xl text-purple-500 mb-2" />

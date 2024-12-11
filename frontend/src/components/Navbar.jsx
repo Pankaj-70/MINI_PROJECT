@@ -183,7 +183,7 @@ const Navbar = () => {
                 Notifications
               </Link>
               <Link
-                to="/support"
+                to="/contact"
                 className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
                 onClick={toggleSidebar}
               >

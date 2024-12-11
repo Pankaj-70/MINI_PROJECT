@@ -15,7 +15,6 @@ import Wishlist from "./screens/WishList";
 import Settings from "./screens/Settings";
 import PaymentMethods from "./screens/PaymentMethods";
 import Notifications from "./screens/Notifications";
-import Support from "./screens/Support";
 import CartPage from "./screens/CartPage";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
@@ -70,7 +69,6 @@ function App() {
               <Route path="/settings" element={<Settings />} />
               <Route path="/payment-methods" element={<PaymentMethods />} />
               <Route path="/notifications" element={<Notifications />} />
-              <Route path="/support" element={<Support />} />
               <Route path="/cart" element={<CartPage />} />
             </Routes>
           </main>
