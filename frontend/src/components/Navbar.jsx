@@ -154,33 +154,13 @@ const Navbar = () => {
               >
                 My Orders
               </Link>
-              <Link
-                to="/wishlist"
-                className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
-                onClick={toggleSidebar}
-              >
-                Wishlist
-              </Link>
-              <Link
-                to="/settings"
-                className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
-                onClick={toggleSidebar}
-              >
-                Settings
-              </Link>
+
               <Link
                 to="/payment-methods"
                 className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
                 onClick={toggleSidebar}
               >
                 Payment Methods
-              </Link>
-              <Link
-                to="/notifications"
-                className="block py-2 hover:bg-gray-400 w-full hover:text-black px-4 pt-3 rounded-md"
-                onClick={toggleSidebar}
-              >
-                Notifications
               </Link>
               <Link
                 to="/contact"

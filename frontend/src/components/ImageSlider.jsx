@@ -40,7 +40,7 @@ const ImageSlider = ({ name, title, description }) => {
 
   return (
     <div className="p-4 md:p-6 lg:p-8 bg-gradient-to-r from-blue-700 to-blue-400 rounded-lg shadow-lg">
-      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-yellow-400 mb-4">
+      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-yellow-400 text-outline-black mb-4">
         {title}
       </h2>
       <p className="text-sm md:text-base lg:text-lg text-gray-200 mb-6">

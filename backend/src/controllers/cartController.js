@@ -65,6 +65,7 @@ const updateItemQuantity = asyncHandler(async (req, res) => {
     return;
   }
   const product = await Product.findById(productId);
+  console.log(productId);
   if (!product) {
     res.status(404).json({ message: "Product not found" });
     return;

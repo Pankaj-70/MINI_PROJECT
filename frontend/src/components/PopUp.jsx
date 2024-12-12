@@ -16,19 +16,49 @@ const PopUp = ({ item, onClose }) => {
   const decrementQuantity = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
 
   const handleAddToCart = () => {
+    const payload = {
+      calorie: item.calorie,
+      category: item.category,
+      createdAt: item.createdAt,
+      description: item.description,
+      id: item._id,
+      _id: item._id,
+      name: item.name,
+      stock: item.stock,
+      updatedAt: item.updatedAt,
+      price: item.price,
+      img: item.img,
+      __v: item.__v,
+    };
     if (!isLoggedIn) {
       navigate("/login");
     } else {
-      dispatch(addToCart(item, quantity, userId));
+      dispatch(addToCart(payload, quantity, userId));
       onClose();
     }
   };
 
   const handleBuyNow = () => {
+    const payload = {
+      calorie: item.calorie,
+      category: item.category,
+      createdAt: item.createdAt,
+      description: item.description,
+      id: item._id,
+      _id: item._id,
+      name: item.name,
+      stock: item.stock,
+      updatedAt: item.updatedAt,
+      price: item.price,
+      img: item.img,
+      __v: item.__v,
+    };
     if (!isLoggedIn) {
       navigate("/login");
     } else {
-      dispatch(addToCart(item, quantity, userId));
+      dispatch(addToCart(payload, quantity, userId));
+      navigate("/cart");
+      window.location.reload();
       onClose();
     }
   };

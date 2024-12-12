@@ -32,7 +32,9 @@ function App() {
         const response = await axios.get("/api/v1/user/getuser");
         if (response.data.success) {
           const userId = response.data.data._id;
-          dispatch(login({ userId }));
+          const name = response.data.data.fullName.toUpperCase();
+          const email = response.data.data.email;
+          dispatch(login({ userId, name, email }));
           if (userId) {
             dispatch(getCart(userId));
           }

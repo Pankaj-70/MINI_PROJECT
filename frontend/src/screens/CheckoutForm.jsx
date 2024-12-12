@@ -2,6 +2,12 @@ import React, { useState } from "react";
 import axios from "axios";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { toast } from "react-toastify";
+import {
+  FaMapMarkedAlt,
+  FaMapMarker,
+  FaMapMarkerAlt,
+  FaMapPin,
+} from "react-icons/fa";
 
 const CheckoutForm = ({ totalAmount, onSubmit }) => {
   const [userDetails, setUserDetails] = useState({
@@ -49,15 +55,18 @@ const CheckoutForm = ({ totalAmount, onSubmit }) => {
           <label className="block text-gray-700 font-medium mb-2">
             Shipping Address
           </label>
-          <input
-            type="text"
-            placeholder="Enter your shipping address"
-            value={userDetails.address}
-            onChange={(e) =>
-              setUserDetails({ ...userDetails, address: e.target.value })
-            }
-            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          />
+          <div className="flex gap-2 items-center">
+            <FaMapMarkerAlt className="text-2xl absolute left-[53px]" />
+            <input
+              type="text"
+              placeholder="Enter your shipping address"
+              value={userDetails.address}
+              onChange={(e) =>
+                setUserDetails({ ...userDetails, address: e.target.value })
+              }
+              className="w-full border text-center border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
         </div>
         <div>
           <label className="block text-gray-700 font-medium mb-2">
@@ -91,23 +100,23 @@ const CheckoutForm = ({ totalAmount, onSubmit }) => {
           </h3>
           <div className="flex justify-between text-gray-700">
             <span>Subtotal:</span>
-            <span>₹{totalAmount.toFixed(2)}</span>
+            <span>${totalAmount.toFixed(2)}</span>
           </div>
           <div className="flex justify-between text-gray-700">
             <span>Tax (18%):</span>
-            <span>₹{taxAmount.toFixed(2)}</span>
+            <span>${taxAmount.toFixed(2)}</span>
           </div>
           <div className="flex justify-between text-gray-700">
             <span>Shipping Fee:</span>
-            <span>₹{shippingFee}</span>
+            <span>${shippingFee}</span>
           </div>
           <div className="flex justify-between text-gray-700">
             <span>Handling Fee:</span>
-            <span>₹{handlingFee}</span>
+            <span>${handlingFee}</span>
           </div>
           <div className="flex justify-between font-bold text-gray-900 mt-3">
             <span>Grand Total:</span>
-            <span>₹{grandTotal.toFixed(2)}</span>
+            <span>${grandTotal.toFixed(2)}</span>
           </div>
         </div>
         {grandTotal > 0 ? (

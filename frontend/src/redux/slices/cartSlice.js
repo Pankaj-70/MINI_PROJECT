@@ -86,7 +86,7 @@ export const addToCart = (item, quantity, userId) => async (dispatch) => {
       { item, quantity, userId },
       { withCredentials: true }
     );
-
+    console.log(item.img);
     const payload = {
       productId: {
         _id: item.id,

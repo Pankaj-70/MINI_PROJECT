@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import Loading from "../components/Loading";
+import axios from "axios";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -12,11 +13,54 @@ const Home = () => {
   );
   const totalOrders = useSelector((state) => state.adminOrder.totalOrders);
   const totalUsers = useSelector((state) => state.adminOrder.totalUsers);
+  const [groupedOrders, setGroupedOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login", { replace: true });
       window.location.reload();
     }
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get(
+          "/api/v1/order/getAllOrders",
+          {},
+          { withCredentials: true }
+        );
+        const allOrders = response.data.data.flatMap((orderData) =>
+          orderData.orders.map((order) => ({
+            createdAt: order.createdAt,
+            userId: orderData.userId,
+            orderId: order._id,
+            sendId: orderData._id,
+            items: order.items,
+            totalAmount: order.totalAmount,
+            status: order.status,
+            scheduleDate: order.scheduleDate,
+            scheduleTime: order.scheduleTime,
+          }))
+        );
+        const sortedOrders = allOrders.sort((a, b) => {
+          if (a.status === "Completed" || a.status === "Cancelled") {
+            return 1;
+          }
+          if (b.status === "Completed" || b.status === "Cancelled") {
+            return -1;
+          }
+          return new Date(a.createdAt) - new Date(b.createdAt);
+        });
+
+        setGroupedOrders(sortedOrders);
+        setFilteredOrders(sortedOrders);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
   }, [isAuthenticated, navigate]);
 
   if (!isAuthenticated) {
@@ -52,38 +96,63 @@ const Home = () => {
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">
             Latest Orders
           </h2>
-          <table className="w-full table-auto text-gray-700 text-sm">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="p-2 text-left">Order ID</th>
-                <th className="p-2 text-left">Customer</th>
-                <th className="p-2 text-left">Status</th>
-                <th className="p-2 text-left">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-t border-gray-300">
-                <td className="p-2">#12345</td>
-                <td className="p-2">John Doe</td>
-                <td className="p-2 text-green-600">Delivered</td>
-                <td className="p-2">$45.99</td>
-              </tr>
-              <tr className="border-t border-gray-300">
-                <td className="p-2">#12346</td>
-                <td className="p-2">Jane Smith</td>
-                <td className="p-2 text-yellow-600">Processing</td>
-                <td className="p-2">$30.00</td>
-              </tr>
-              <tr className="border-t border-gray-300">
-                <td className="p-2">#12347</td>
-                <td className="p-2">Robert Brown</td>
-                <td className="p-2 text-blue-600">Shipped</td>
-                <td className="p-2">$60.50</td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white">
+              <thead>
+                <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                  <th className="py-3 px-6 text-left">Order ID</th>
+                  <th className="py-3 px-6 text-left">User ID</th>
+                  <th className="py-3 px-6 text-left">Status</th>
+                  <th className="py-3 px-6 text-left">Total Amount</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-600 text-sm font-light">
+                {filteredOrders.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan="4"
+                      className="py-3 px-6 text-center text-gray-500"
+                    >
+                      No orders available
+                    </td>
+                  </tr>
+                )}
+                {filteredOrders.slice(0, 3).map((order) => (
+                  <tr
+                    key={order.orderId}
+                    className="border-b border-gray-200 hover:bg-gray-100"
+                  >
+                    <td className="py-3 px-6 text-left whitespace-nowrap">
+                      <span className="font-medium">#{order.orderId}</span>
+                    </td>
+                    <td className="py-3 px-6 text-left">
+                      <span>{order.userId}</span>
+                    </td>
+                    <td className="py-3 px-6 text-left">
+                      <span
+                        className={`py-1 px-3 rounded-full text-lg${
+                          order.status === "Completed"
+                            ? " text-green-600"
+                            : order.status === "Cancelled"
+                            ? " text-red-600"
+                            : " text-yellow-600"
+                        }`}
+                      >
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="py-3 px-6 text-left">
+                      <span className="font-medium">
+                        ${order.totalAmount.toFixed(2)}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mt-8">
           <div className="bg-purple-600 text-white p-6 rounded-lg shadow-lg hover:bg-purple-700 transition duration-300 text-center">
             <h3 className="text-lg font-semibold mb-2">Manage Products</h3>
             <p className="mb-4">
@@ -104,20 +173,6 @@ const Home = () => {
               className="bg-teal-800 hover:bg-teal-900 px-4 py-2 rounded text-white"
             >
               View Orders
-            </Link>
-          </div>
-          <div className="bg-indigo-600 text-white p-6 rounded-lg shadow-lg hover:bg-indigo-700 transition duration-300 text-center">
-            <h3 className="text-lg font-semibold mb-2">
-              Restaurant Management
-            </h3>
-            <p className="mb-4">
-              Manage restaurant profiles and their requests.
-            </p>
-            <Link
-              to="/customers"
-              className="bg-indigo-800 hover:bg-indigo-900 px-4 py-2 rounded text-white"
-            >
-              Manage Restaurants
             </Link>
           </div>
         </div>

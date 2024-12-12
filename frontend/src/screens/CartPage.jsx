@@ -79,7 +79,6 @@ const CartPage = () => {
       0
     );
   };
-
   return (
     <div className="relative flex flex-col md:flex-row p-6 pt-24 text-gray-800 bg-gradient-to-b from-gray-100 to-gray-300 min-h-screen gap-6">
       {showPopup && (
@@ -124,7 +123,7 @@ const CartPage = () => {
                       {item.productId.name || "Unknown Product"}
                     </h3>
                     <p className="text-gray-600 text-sm">
-                      Price: ₹{item.productId.price || 0}
+                      Price: ${item.productId.price || 0}
                     </p>
                     <div className="flex items-center mt-2 space-x-3">
                       <button
