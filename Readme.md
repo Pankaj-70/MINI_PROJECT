@@ -1,2 +1,14 @@
-Exploring web D
-Change
+A food website, Gastron, with a unified backend connecting admin frontend and user frontend.
+
+Technologies used:
+- MONGO DB
+- EXPRESS
+- REACT
+- NODE JS
+- TAILWIND CSS
+
+FEATURES:
+- SCHEDULED ORDER
+- REAL TIME ORDER TRACKING
+- PAYMENT INTEGRATION USING PAYPAL
+- MAIL SENDING OPTIONS FOR SUBSCRIPTION AND FEEDBACK PURPOSE
